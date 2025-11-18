@@ -1,9 +1,10 @@
 
-import type { ClinicalTrialPaper } from './types';
+import type { FeedItem } from './types';
 
-export const initialPapers: ClinicalTrialPaper[] = [
+export const initialFeedItems: FeedItem[] = [
   {
     id: '1',
+    type: 'paper',
     sourceUrl: 'https://clinicaltrials.gov/ct2/show/NCT04368728',
     title: 'A Study of a New Drug for Alzheimer\'s Disease',
     principalInvestigator: 'Dr. Evelyn Reed',
@@ -16,10 +17,21 @@ export const initialPapers: ClinicalTrialPaper[] = [
     sponsor: 'NeuroInnovate Therapeutics',
   },
   {
+    id: 'vid-1',
+    type: 'video',
+    paperId: '1',
+    title: 'Video Summary: New Alzheimer\'s Drug Trial',
+    videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    thumbnailUrl: 'https://picsum.photos/seed/videoplay/1024/768',
+    imageHint: 'video play button',
+    summary: 'A quick video explaining the goals and methods of the new Alzheimer\'s drug trial led by Dr. Evelyn Reed.',
+  },
+  {
     id: '2',
+    type: 'paper',
     sourceUrl: 'https://clinicaltrials.gov/ct2/show/NCT04508980',
     title: 'Cardiovascular Outcomes Trial for a New Diabetes Medication',
-    author: 'Dr. Maria Garcia',
+    principalInvestigator: 'Dr. Maria Garcia',
     publishedDate: 'Feb 20, 2024',
     summary: 'A randomized, double-blind, placebo-controlled, multicenter trial to determine the effect of a new diabetes drug on major adverse cardiovascular events (MACE) in adults with type 2 diabetes and established cardiovascular disease. Participants will be followed for up to 5 years.',
     imageUrl: 'https://picsum.photos/seed/naturepath/1024/768',
@@ -30,6 +42,7 @@ export const initialPapers: ClinicalTrialPaper[] = [
   },
   {
     id: '3',
+    type: 'paper',
     sourceUrl: 'https://clinicaltrials.gov/ct2/show/NCT05123456',
     title: 'A Phase 1/2 Study of a CAR-T Cell Therapy for Non-Hodgkin Lymphoma',
     principalInvestigator: 'Dr. David Chen',
@@ -41,8 +54,19 @@ export const initialPapers: ClinicalTrialPaper[] = [
     phase: 'Phase 1',
     sponsor: 'OncoVex Advanced Therapies',
   },
+    {
+    id: 'vid-2',
+    type: 'video',
+    paperId: '3',
+    title: 'Explainer: CAR-T Cell Therapy',
+    videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+    thumbnailUrl: 'https://picsum.photos/seed/sciencevid/1024/768',
+    imageHint: 'science video',
+    summary: 'Learn how CAR-T cell therapy works to fight cancer like Non-Hodgkin Lymphoma in this short animated video.',
+  },
   {
     id: '4',
+    type: 'paper',
     sourceUrl: 'https://clinicaltrials.gov/ct2/show/NCT03898888',
     title: 'Efficacy of a Novel Vaccine for Respiratory Syncytial Virus (RSV)',
     principalInvestigator: 'Dr. Alex Grant',
@@ -56,6 +80,7 @@ export const initialPapers: ClinicalTrialPaper[] = [
   },
   {
     id: '5',
+    type: 'paper',
     sourceUrl: 'https://clinicaltrials.gov/ct2/show/NCT05551234',
     title: 'Trial of a New Topical Treatment for Atopic Dermatitis (Eczema)',
     principalInvestigator: 'Dr. Kenji Tanaka',

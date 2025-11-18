@@ -6,9 +6,10 @@ import useEmblaCarousel from 'embla-carousel-react';
 import type { EmblaCarouselType } from 'embla-carousel-react';
 import { recommendPapers } from '@/ai/flows/recommend-papers';
 import { usePapers } from '@/context/paper-context';
-import type { ClinicalTrialPaper } from '@/lib/types';
-import { initialPapers } from '@/lib/data';
+import type { FeedItem, ClinicalTrialPaper } from '@/lib/types';
+import { initialFeedItems } from '@/lib/data';
 import { PaperView } from './paper-view';
+import { VideoCard } from './video-card';
 import { Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -16,7 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 export function PaperFeed() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, axis: 'y' });
   const { addToViewHistory, viewHistory } = usePapers();
-  const [papers, setPapers] = useState<ClinicalTrialPaper[]>(initialPapers);
+  const [feedItems, setFeedItems] = useState<FeedItem[]>(initialFeedItems);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   
@@ -26,14 +27,14 @@ export function PaperFeed() {
     canSwipeVertical.current = enabled;
   }, []);
 
-  const handlePaperSwipe = useCallback(() => {
+  const handleSwipe = useCallback(() => {
     if (!emblaApi) return;
     const previousIndex = emblaApi.previousScrollSnap();
-    const previousPaper = papers[previousIndex];
-    if (previousPaper) {
-      addToViewHistory(previousPaper.title);
+    const previousItem = feedItems[previousIndex];
+    if (previousItem && previousItem.type === 'paper') {
+      addToViewHistory(previousItem.title);
     }
-  }, [emblaApi, papers, addToViewHistory]);
+  }, [emblaApi, feedItems, addToViewHistory]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -44,14 +45,14 @@ export function PaperFeed() {
       }
     };
 
-    emblaApi.on('settle', handlePaperSwipe);
+    emblaApi.on('settle', handleSwipe);
     emblaApi.on('dragStart', onDragStart);
 
     return () => {
-      emblaApi.off('settle', handlePaperSwipe);
+      emblaApi.off('settle', handleSwipe);
       emblaApi.off('dragStart', onDragStart);
     };
-  }, [emblaApi, handlePaperSwipe]);
+  }, [emblaApi, handleSwipe]);
 
 
   const handleGetRecommendations = async () => {
@@ -65,16 +66,16 @@ export function PaperFeed() {
       const result = await recommendPapers({ viewHistory });
       const recommendedTitles = result.recommendations;
       
-      const allPossiblePapers = initialPapers;
+      const allPossiblePapers = initialFeedItems.filter(item => item.type === 'paper') as ClinicalTrialPaper[];
 
       const newPapers = allPossiblePapers.filter(paper => 
-        recommendedTitles.includes(paper.title) && !papers.some(a => a.id === paper.id)
+        recommendedTitles.includes(paper.title) && !feedItems.some(item => item.id === paper.id)
       );
 
       if (newPapers.length > 0) {
-        setPapers(prev => [...prev, ...newPapers]);
+        setFeedItems(prev => [...prev, ...newPapers]);
         toast({ title: "New recommendations added!", description: "We've added some papers to your feed we think you'll like." });
-        setTimeout(() => emblaApi?.scrollTo(papers.length), 100);
+        setTimeout(() => emblaApi?.scrollTo(feedItems.length), 100);
       } else {
         toast({ title: "No new recommendations", description: "You've seen all our current recommendations for you." });
       }
@@ -90,9 +91,13 @@ export function PaperFeed() {
     <div className="h-full w-full relative">
       <div className="overflow-hidden h-full" ref={emblaRef}>
         <div className="flex flex-col h-full">
-          {papers.map((paper) => (
-            <div className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" key={paper.id}>
-              <PaperView paper={paper} onVerticalSwipe={setVerticalSwipe} />
+          {feedItems.map((item) => (
+            <div className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" key={item.id}>
+              {item.type === 'paper' ? (
+                <PaperView paper={item} onVerticalSwipe={setVerticalSwipe} />
+              ) : (
+                <VideoCard video={item} />
+              )}
             </div>
           ))}
           <div className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full flex flex-col items-center justify-center p-8 bg-background">
