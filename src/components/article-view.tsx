@@ -19,27 +19,35 @@ export function ArticleView({ article, onVerticalSwipe }: { article: Article, on
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
+  // This handler is now used for the Insights page to allow its internal scroll
+  // while preventing the parent vertical carousel from firing.
+  // The logic to stop propagation has been moved to the parent (ArticleFeed).
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
-    // If scrolling vertically, stop the event from propagating to the parent vertical carousel
+    // We only need to handle this for the Insights page, which has vertical content.
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        e.stopPropagation();
+      // The actual prevention now happens in ArticleFeed's dragStart handler
     }
   }, []);
 
-
   useEffect(() => {
     if (!emblaApi) return;
+    
     setScrollSnaps(emblaApi.scrollSnapList());
+
     const onSelect = () => {
       const newIndex = emblaApi.selectedScrollSnap();
       setSelectedIndex(newIndex);
-      // Disable vertical swiping if we are on the Insights page (index 0)
+      // Disable vertical swiping if we are on the Insights page (index 0).
+      // This is the key communication to the parent component.
       onVerticalSwipe(newIndex !== 0);
     };
+
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
+    
     // Initial check
     onSelect();
+
     return () => {
       emblaApi.off('select', onSelect);
       emblaApi.off('reInit', onSelect);

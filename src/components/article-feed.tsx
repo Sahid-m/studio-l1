@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
+import type { EmblaCarouselType } from 'embla-carousel-react';
 import { recommendArticles } from '@/ai/flows/recommend-articles';
 import { useArticles } from '@/context/article-context';
 import type { Article } from '@/lib/types';
@@ -18,19 +19,14 @@ export function ArticleFeed() {
   const [articles, setArticles] = useState<Article[]>(initialArticles);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  
+  // This ref will control whether vertical swiping is allowed.
   const canSwipeVertical = useRef(true);
 
+  // Callback to allow child components (ArticleView) to enable/disable vertical swiping.
   const setVerticalSwipe = useCallback((enabled: boolean) => {
     canSwipeVertical.current = enabled;
-    if (emblaApi) {
-        // A bit of a hack: toggle draggable to make embla re-evaluate drag permissions
-        if (enabled) {
-            (emblaApi.internalEngine().options.draggable as any) = true;
-        } else {
-            (emblaApi.internalEngine().options.draggable as any) = false;
-        }
-    }
-  }, [emblaApi]);
+  }, []);
 
   const handleArticleSwipe = useCallback(() => {
     if (!emblaApi) return;
@@ -42,24 +38,26 @@ export function ArticleFeed() {
   }, [emblaApi, articles, addToReadingHistory]);
 
   useEffect(() => {
-    if (emblaApi) {
-      emblaApi.on('settle', handleArticleSwipe);
-      
-      const onDragStart = (emblaApi: any, event: any) => {
-          if (!canSwipeVertical.current) {
-            // Prevent drag if vertical swipe is disabled
-            return true; // true prevents the drag
-          }
-          return false;
-      }
-      emblaApi.on('dragStart', onDragStart as any)
+    if (!emblaApi) return;
 
-      return () => {
-        emblaApi.off('settle', handleArticleSwipe);
-        emblaApi.off('dragStart', onDragStart as any);
-      };
-    }
+    // This is the key change. We use Embla's event system to prevent dragging
+    // when canSwipeVertical is false.
+    const onDragStart = (api: EmblaCarouselType, event: Event) => {
+      if (!canSwipeVertical.current) {
+        // Stop the drag event from being processed by this carousel.
+        event.stopImmediatePropagation();
+      }
+    };
+
+    emblaApi.on('settle', handleArticleSwipe);
+    emblaApi.on('dragStart', onDragStart);
+
+    return () => {
+      emblaApi.off('settle', handleArticleSwipe);
+      emblaApi.off('dragStart', onDragStart);
+    };
   }, [emblaApi, handleArticleSwipe]);
+
 
   const handleGetRecommendations = async () => {
     if (readingHistory.length === 0) {
