@@ -1,5 +1,6 @@
 
 
+
 export interface ClinicalTrialPaper {
   id: string;
   type: 'paper';
@@ -20,6 +21,7 @@ export interface VideoSummary {
     type: 'video';
     title: string;
     paperId: string; // The ID of the paper it summarizes
+    sourceUrl: string; // The source URL of the original paper
     videoUrl: string;
     thumbnailUrl: string;
     imageHint: string;

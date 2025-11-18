@@ -1,15 +1,18 @@
 
 'use client';
 
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
 import type { VideoSummary } from '@/lib/types';
-import { useState, useRef, useEffect } from 'react';
+import { cn } from '@/lib/utils';
+import { VideoInsights } from './video-insights';
+import { VideoSource } from './video-source';
 import Image from 'next/image';
 import { Play, Pause, Volume2, VolumeX, Maximize } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 
-export function VideoCard({ video }: { video: VideoSummary }) {
+function MainVideo({ video }: { video: VideoSummary }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -63,7 +66,7 @@ export function VideoCard({ video }: { video: VideoSummary }) {
   }, []);
 
   return (
-    <Card className="flex flex-col h-full w-full overflow-hidden border-0 shadow-none rounded-none bg-black">
+    <div className="flex flex-col h-full w-full overflow-hidden border-0 shadow-none rounded-none bg-black">
       <div className="relative h-full w-full flex items-center justify-center">
         <video
           ref={videoRef}
@@ -107,6 +110,105 @@ export function VideoCard({ video }: { video: VideoSummary }) {
             <Progress value={progress} className="h-1 bg-white/20 [&>div]:bg-white" />
         </div>
       </div>
-    </Card>
+    </div>
+  );
+}
+
+
+export function VideoView({ video, onVerticalSwipe }: { video: VideoSummary, onVerticalSwipe: (enabled: boolean) => void }) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: false,
+    startIndex: 1,
+    axis: 'x',
+  });
+  const [selectedIndex, setSelectedIndex] = useState(1);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+
+  const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      onVerticalSwipe(false);
+    }
+  }, [onVerticalSwipe]);
+  
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+      onVerticalSwipe(false);
+  }, [onVerticalSwipe]);
+
+  const handleMouseLeave = useCallback(() => {
+    onVerticalSwipe(true);
+  }, [onVerticalSwipe]);
+
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    
+    setScrollSnaps(emblaApi.scrollSnapList());
+
+    const onSelect = () => {
+      const newIndex = emblaApi.selectedScrollSnap();
+      setSelectedIndex(newIndex);
+      onVerticalSwipe(newIndex !== 0);
+    };
+
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onSelect);
+    
+    onSelect();
+
+    return () => {
+      emblaApi.off('select', onSelect);
+      emblaApi.off('reInit', onSelect);
+    };
+  }, [emblaApi, onVerticalSwipe]);
+
+  const scrollTo = (index: number) => {
+    emblaApi?.scrollTo(index);
+  };
+
+  const views = [
+    { 
+      component: (
+        <div onTouchMove={handleTouchMove} onMouseLeave={handleMouseLeave} className="h-full">
+            <VideoInsights video={video} onWheel={handleWheel} />
+        </div>
+      ), 
+      label: 'Insights' 
+    },
+    { component: <MainVideo video={video} />, label: 'Video' },
+    { component: <VideoSource video={video} onSwipeLeft={() => scrollTo(1)} />, label: 'Source' },
+  ];
+
+  return (
+    <div className="h-full w-full relative">
+      <div className="overflow-hidden h-full" ref={emblaRef}>
+        <div className="flex h-full">
+          {views.map((view, index) => (
+            <div className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" key={index}>
+              {view.component}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="absolute bottom-20 left-0 right-0 flex justify-center items-center gap-2 md:hidden">
+        {scrollSnaps.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => scrollTo(index)}
+            className={cn(
+              "p-1 rounded-full transition-all",
+              selectedIndex === index ? "bg-primary/20" : "bg-transparent"
+            )}
+          >
+            <div
+              className={cn(
+                "w-2 h-2 rounded-full transition-all",
+                selectedIndex === index ? "bg-primary" : "bg-muted-foreground/50"
+              )}
+            />
+             <span className="sr-only">Go to {views[index].label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }

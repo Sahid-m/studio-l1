@@ -7,7 +7,6 @@ import type { ClinicalTrialPaper } from '@/lib/types';
 import { PaperCard } from './paper-card';
 import { PaperInsights } from './paper-insights';
 import { PaperSource } from './paper-source';
-import { Dot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPaper, onVerticalSwipe: (enabled: boolean) => void }) {
@@ -19,12 +18,23 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
+  // This handler is now used for the Insights page to allow its internal scroll
+  // while preventing the parent vertical carousel from firing.
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
-    // This stops the main feed from scrolling when interacting with the insights page.
+    // We only need to handle this for the Insights page, which has vertical content.
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-      e.stopPropagation();
+      onVerticalSwipe(false);
     }
-  }, []);
+  }, [onVerticalSwipe]);
+  
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+      onVerticalSwipe(false);
+  }, [onVerticalSwipe]);
+
+  const handleMouseLeave = useCallback(() => {
+    onVerticalSwipe(true);
+  }, [onVerticalSwipe]);
+
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -35,6 +45,7 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
       const newIndex = emblaApi.selectedScrollSnap();
       setSelectedIndex(newIndex);
       // Disable vertical swiping if we are on the Insights page (index 0).
+      // This is the key communication to the parent component.
       onVerticalSwipe(newIndex !== 0);
     };
 
@@ -55,7 +66,14 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
   };
 
   const views = [
-    { component: <PaperInsights paper={paper} onWheel={handleWheel} />, label: 'Insights' },
+    { 
+      component: (
+        <div onTouchMove={handleTouchMove} onMouseLeave={handleMouseLeave} className="h-full">
+            <PaperInsights paper={paper} onWheel={handleWheel} />
+        </div>
+      ), 
+      label: 'Insights' 
+    },
     { component: <PaperCard paper={paper} />, label: 'Paper' },
     { component: <PaperSource paper={paper} onSwipeLeft={() => scrollTo(1)} />, label: 'Source' },
   ];

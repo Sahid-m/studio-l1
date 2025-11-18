@@ -9,7 +9,7 @@ import { usePapers } from '@/context/paper-context';
 import type { FeedItem, ClinicalTrialPaper } from '@/lib/types';
 import { initialFeedItems } from '@/lib/data';
 import { PaperView } from './paper-view';
-import { VideoCard } from './video-card';
+import { VideoView } from './video-view';
 import { Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -96,7 +96,7 @@ export function PaperFeed() {
               {item.type === 'paper' ? (
                 <PaperView paper={item} onVerticalSwipe={setVerticalSwipe} />
               ) : (
-                <VideoCard video={item} />
+                <VideoView video={item} onVerticalSwipe={setVerticalSwipe} />
               )}
             </div>
           ))}
