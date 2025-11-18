@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { recommendArticles } from '@/ai/flows/recommend-articles';
 import { useArticles } from '@/context/article-context';
@@ -18,6 +18,19 @@ export function ArticleFeed() {
   const [articles, setArticles] = useState<Article[]>(initialArticles);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const canSwipeVertical = useRef(true);
+
+  const setVerticalSwipe = useCallback((enabled: boolean) => {
+    canSwipeVertical.current = enabled;
+    if (emblaApi) {
+        // A bit of a hack: toggle draggable to make embla re-evaluate drag permissions
+        if (enabled) {
+            (emblaApi.internalEngine().options.draggable as any) = true;
+        } else {
+            (emblaApi.internalEngine().options.draggable as any) = false;
+        }
+    }
+  }, [emblaApi]);
 
   const handleArticleSwipe = useCallback(() => {
     if (!emblaApi) return;
@@ -31,8 +44,19 @@ export function ArticleFeed() {
   useEffect(() => {
     if (emblaApi) {
       emblaApi.on('settle', handleArticleSwipe);
+      
+      const onDragStart = (emblaApi: any, event: any) => {
+          if (!canSwipeVertical.current) {
+            // Prevent drag if vertical swipe is disabled
+            return true; // true prevents the drag
+          }
+          return false;
+      }
+      emblaApi.on('dragStart', onDragStart as any)
+
       return () => {
         emblaApi.off('settle', handleArticleSwipe);
+        emblaApi.off('dragStart', onDragStart as any);
       };
     }
   }, [emblaApi, handleArticleSwipe]);
@@ -75,7 +99,7 @@ export function ArticleFeed() {
         <div className="flex flex-col h-full">
           {articles.map((article) => (
             <div className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" key={article.id}>
-              <ArticleView article={article} />
+              <ArticleView article={article} onVerticalSwipe={setVerticalSwipe} />
             </div>
           ))}
           <div className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full flex flex-col items-center justify-center p-8 bg-background">

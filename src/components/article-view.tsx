@@ -1,6 +1,7 @@
+
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import type { Article } from '@/lib/types';
 import { ArticleCard } from './article-card';
@@ -9,7 +10,7 @@ import { ArticleSource } from './article-source';
 import { Dot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export function ArticleView({ article }: { article: Article }) {
+export function ArticleView({ article, onVerticalSwipe }: { article: Article, onVerticalSwipe: (enabled: boolean) => void }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
     startIndex: 1,
@@ -18,26 +19,39 @@ export function ArticleView({ article }: { article: Article }) {
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
+  const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    // If scrolling vertically, stop the event from propagating to the parent vertical carousel
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.stopPropagation();
+    }
+  }, []);
+
+
   useEffect(() => {
     if (!emblaApi) return;
     setScrollSnaps(emblaApi.scrollSnapList());
     const onSelect = () => {
-      setSelectedIndex(emblaApi.selectedScrollSnap());
+      const newIndex = emblaApi.selectedScrollSnap();
+      setSelectedIndex(newIndex);
+      // Disable vertical swiping if we are on the Insights page (index 0)
+      onVerticalSwipe(newIndex !== 0);
     };
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
+    // Initial check
+    onSelect();
     return () => {
       emblaApi.off('select', onSelect);
       emblaApi.off('reInit', onSelect);
     };
-  }, [emblaApi]);
+  }, [emblaApi, onVerticalSwipe]);
 
   const scrollTo = (index: number) => {
     emblaApi?.scrollTo(index);
   };
 
   const views = [
-    { component: <ArticleInsights article={article} />, label: 'Insights' },
+    { component: <ArticleInsights article={article} onWheel={handleWheel} />, label: 'Insights' },
     { component: <ArticleCard article={article} />, label: 'Article' },
     { component: <ArticleSource article={article} onSwipeLeft={() => scrollTo(1)} />, label: 'Source' },
   ];
