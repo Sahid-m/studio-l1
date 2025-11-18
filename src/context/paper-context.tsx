@@ -45,11 +45,11 @@ export const PaperProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const removeSavedPaper = (paperId: string) => {
-    setSavedPapers((prev) => prev.filter((a) => a.id !== paperId));
+    setSavedPapers((prev) => prev.filter((p) => p.id !== paperId));
   };
 
   const isPaperSaved = (paperId: string) => {
-    return savedPapers.some((a) => a.id === paperId);
+    return savedPapers.some((p) => p.id === paperId);
   };
 
   const addToViewHistory = (paperTitle: string) => {

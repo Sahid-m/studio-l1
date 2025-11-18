@@ -1,10 +1,10 @@
 
-import { ArticleFeed } from '@/components/article-feed';
+import { PaperFeed } from '@/components/paper-feed';
 
 export default function Home() {
   return (
     <main className="h-svh w-full md:h-screen">
-      <ArticleFeed />
+      <PaperFeed />
     </main>
   );
 }
