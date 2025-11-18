@@ -43,7 +43,6 @@ export default function CreateVideoPage() {
       const result = await summarizePaperToVideo(data);
       if (result.videoUrl) {
         
-        const fetch = (await import('node-fetch')).default;
         // The URL from Veo is temporary, so we fetch it and convert to a data URI to make it permanent.
         const videoDownloadResponse = await fetch(
             `${result.videoUrl}&key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`
