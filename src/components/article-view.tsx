@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -40,7 +39,7 @@ export function ArticleView({ article }: { article: Article }) {
   const views = [
     { component: <ArticleInsights article={article} />, label: 'Insights' },
     { component: <ArticleCard article={article} />, label: 'Article' },
-    { component: <ArticleSource article={article} />, label: 'Source' },
+    { component: <ArticleSource article={article} onSwipeLeft={() => scrollTo(1)} />, label: 'Source' },
   ];
 
   return (

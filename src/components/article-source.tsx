@@ -1,13 +1,12 @@
-
 'use client';
 
 import type { Article } from '@/lib/types';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Globe } from 'lucide-react';
+import { Globe, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
 import Link from 'next/link';
 
-export function ArticleSource({ article }: { article: Article }) {
+export function ArticleSource({ article, onSwipeLeft, onSwipeRight }: { article: Article, onSwipeLeft?: () => void, onSwipeRight?: () => void }) {
   return (
     <div className="h-full w-full bg-muted/20">
       <div className="flex h-full w-full flex-col">
@@ -22,13 +21,28 @@ export function ArticleSource({ article }: { article: Article }) {
             </a>
           </Button>
         </header>
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden relative group">
           <iframe
             src={article.sourceUrl}
             title={article.title}
             className="h-full w-full border-0"
             sandbox="allow-scripts allow-same-origin"
           />
+           {/* Swipe affordance for desktop */}
+           <div className="absolute inset-y-0 left-0 hidden md:flex items-center justify-center px-4 bg-gradient-to-r from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                {onSwipeLeft && (
+                    <Button size="icon" variant="secondary" onClick={onSwipeLeft} className='rounded-full'>
+                        <ArrowLeft />
+                    </Button>
+                )}
+            </div>
+            <div className="absolute inset-y-0 right-0 hidden md:flex items-center justify-center px-4 bg-gradient-to-l from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                {onSwipeRight && (
+                    <Button size="icon" variant="secondary" onClick={onSwipeRight} className='rounded-full'>
+                        <ArrowRight />
+                    </Button>
+                )}
+            </div>
         </div>
       </div>
     </div>
