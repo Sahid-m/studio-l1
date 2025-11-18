@@ -1,0 +1,55 @@
+
+import type { Article } from './types';
+
+export const initialArticles: Article[] = [
+  {
+    id: '1',
+    sourceUrl: 'https://example.com/article1',
+    title: 'The Future of Artificial Intelligence',
+    author: 'Alex Grant',
+    publishedDate: 'Oct 26, 2023',
+    content: `Artificial intelligence (AI) is rapidly changing the world as we know it. From self-driving cars to personalized medicine, the applications of AI are vast and growing. This article explores the latest advancements in machine learning, neural networks, and their potential impact on society.\n\nWe delve into the ethical considerations surrounding AI, discussing the importance of creating responsible and unbiased systems. As AI becomes more integrated into our daily lives, understanding its capabilities and limitations is more crucial than ever. Join us as we journey into the complex and fascinating world of artificial intelligence.`,
+    imageUrl: 'https://picsum.photos/seed/aibrain/1024/768',
+    imageHint: 'AI brain',
+  },
+  {
+    id: '2',
+    sourceUrl: 'https://example.com/article2',
+    title: 'Sustainable Living: A Guide for the Modern Era',
+    author: 'Maria Garcia',
+    publishedDate: 'Nov 5, 2023',
+    content: `Sustainability is no longer a niche concept but a global imperative. This guide provides practical tips for incorporating sustainable practices into your everyday life. From reducing waste and conserving energy to making conscious consumer choices, every small step contributes to a healthier planet.\n\nDiscover how to create a "green" home, the benefits of plant-based diets, and the power of community-led environmental initiatives. Living sustainably is not about perfection, but about making mindful choices that align with your values and the well-being of our planet.`,
+    imageUrl: 'https://picsum.photos/seed/naturepath/1024/768',
+    imageHint: 'nature path',
+  },
+  {
+    id: '3',
+    sourceUrl: 'https://example.com/article3',
+    title: 'The Revolution of Remote Work',
+    author: 'David Chen',
+    publishedDate: 'Nov 12, 2023',
+    content: `The landscape of work has been fundamentally altered. Remote work, once a perk, is now a mainstream reality for millions. This article examines the pros and cons of working from home, its effects on productivity, and how companies are adapting to a distributed workforce.\n\nWe also explore the future of the office, the rise of hybrid models, and the technologies that are making seamless remote collaboration possible. Whether you're an employee or an employer, this analysis offers valuable insights into navigating the new world of work.`,
+    imageUrl: 'https://picsum.photos/seed/designdesk/1024/768',
+    imageHint: 'design desk',
+  },
+  {
+    id: '4',
+    sourceUrl: 'https://example.com/article4',
+    title: 'Exploring the Cosmos: The Latest in Space Exploration',
+    author: 'Dr. Evelyn Reed',
+    publishedDate: 'Nov 20, 2023',
+    content: `Humanity's quest to understand the universe is reaching new heights. With the James Webb Space Telescope and upcoming missions to Mars and beyond, we are on the brink of discoveries that could rewrite our understanding of the cosmos. This piece covers the latest findings, from exoplanet atmospheres to the mysteries of dark matter.\n\nLearn about the challenges and triumphs of modern space exploration and what the future holds for our journey to the stars. The universe is vast and full of wonders, and our exploration has only just begun.`,
+    imageUrl: 'https://picsum.photos/seed/techabs/1024/768',
+    imageHint: 'technology abstract',
+  },
+  {
+    id: '5',
+    sourceUrl: 'https://example.com/article5',
+    title: 'The Art of Mindful Communication',
+    author: 'Kenji Tanaka',
+    publishedDate: 'Dec 1, 2023',
+    content: `In a world of constant digital noise, the quality of our interactions has never been more important. Mindful communication is the practice of bringing awareness and presence to our conversations. This article offers techniques to improve your listening skills, express yourself more clearly, and build deeper connections with others.\n\nBy practicing mindfulness, we can transform our relationships, both personal and professional. It's about speaking and listening with intention and compassion, fostering understanding and reducing conflict.`,
+    imageUrl: 'https://picsum.photos/seed/bizmeet/1024/768',
+    imageHint: 'business meeting',
+  },
+];
