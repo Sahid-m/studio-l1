@@ -20,7 +20,9 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    // This stops the main feed from scrolling when interacting with the insights page.
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      e.stopPropagation();
     }
   }, []);
 
@@ -32,12 +34,14 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
     const onSelect = () => {
       const newIndex = emblaApi.selectedScrollSnap();
       setSelectedIndex(newIndex);
+      // Disable vertical swiping if we are on the Insights page (index 0).
       onVerticalSwipe(newIndex !== 0);
     };
 
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
     
+    // Initial check
     onSelect();
 
     return () => {
