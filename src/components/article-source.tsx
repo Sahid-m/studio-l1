@@ -10,12 +10,18 @@ export function ArticleSource({ article, onSwipeLeft, onSwipeRight }: { article:
   return (
     <div className="h-full w-full bg-muted/20">
       <div className="flex h-full w-full flex-col">
-        <header className="flex items-center justify-between border-b bg-background p-4">
+        <header className="flex items-center justify-between border-b bg-background p-2 md:p-4">
           <div className="flex items-center gap-2">
-            <Globe className="h-5 w-5" />
-            <h2 className="font-semibold">Article Source</h2>
+            {onSwipeLeft && (
+                <Button size="icon" variant="ghost" onClick={onSwipeLeft}>
+                    <ArrowLeft />
+                    <span className="sr-only">Go back to article</span>
+                </Button>
+            )}
+            <Globe className="h-5 w-5 hidden sm:block" />
+            <h2 className="font-semibold text-sm sm:text-base truncate">Article Source</h2>
           </div>
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" size="sm">
             <a href={article.sourceUrl} target="_blank" rel="noopener noreferrer">
               Open in New Tab
             </a>
