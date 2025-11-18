@@ -46,11 +46,11 @@ export function PaperFeed() {
     };
 
     emblaApi.on('settle', handleSwipe);
-    emblaApi.on('dragStart', onDragStart);
+    emblaApi.on('dragStart', onDragStart, true); // Use true for capture phase
 
     return () => {
       emblaApi.off('settle', handleSwipe);
-      emblaApi.off('dragStart', onDragStart);
+      emblaApi.off('dragStart', onDragStart, true);
     };
   }, [emblaApi, handleSwipe]);
 

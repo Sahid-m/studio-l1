@@ -126,18 +126,9 @@ export function VideoView({ video, onVerticalSwipe }: { video: VideoSummary, onV
 
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-      onVerticalSwipe(false);
+      // The actual prevention now happens in PaperFeed's dragStart handler
     }
-  }, [onVerticalSwipe]);
-  
-  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-      onVerticalSwipe(false);
-  }, [onVerticalSwipe]);
-
-  const handleMouseLeave = useCallback(() => {
-    onVerticalSwipe(true);
-  }, [onVerticalSwipe]);
-
+  }, []);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -167,11 +158,7 @@ export function VideoView({ video, onVerticalSwipe }: { video: VideoSummary, onV
 
   const views = [
     { 
-      component: (
-        <div onTouchMove={handleTouchMove} onMouseLeave={handleMouseLeave} className="h-full">
-            <VideoInsights video={video} onWheel={handleWheel} />
-        </div>
-      ), 
+      component: <VideoInsights video={video} onWheel={handleWheel} />, 
       label: 'Insights' 
     },
     { component: <MainVideo video={video} />, label: 'Video' },
