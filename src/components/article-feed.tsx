@@ -7,13 +7,13 @@ import { recommendArticles } from '@/ai/flows/recommend-articles';
 import { useArticles } from '@/context/article-context';
 import type { Article } from '@/lib/types';
 import { initialArticles } from '@/lib/data';
-import { ArticleCard } from './article-card';
+import { ArticleView } from './article-view';
 import { Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
 export function ArticleFeed() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, axis: 'x' });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, axis: 'y' });
   const { addToReadingHistory, readingHistory } = useArticles();
   const [articles, setArticles] = useState<Article[]>(initialArticles);
   const [isLoading, setIsLoading] = useState(false);
@@ -72,12 +72,12 @@ export function ArticleFeed() {
   return (
     <div className="h-full w-full relative">
       <div className="overflow-hidden h-full" ref={emblaRef}>
-        <div className="flex h-full">
+        <div className="flex flex-col h-full">
           {articles.map((article) => (
             <div className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" key={article.id}>
-              <ArticleCard article={article} />
+              <ArticleView article={article} />
             </div>
-))}
+          ))}
           <div className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full flex flex-col items-center justify-center p-8 bg-background">
              <div className="text-center max-w-md">
                 <Sparkles className="mx-auto h-12 w-12 text-primary" />

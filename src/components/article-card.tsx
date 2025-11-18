@@ -76,7 +76,7 @@ export function ArticleCard({ article }: { article: Article }) {
         </div>
       </CardHeader>
       <CardContent className="flex-1 p-0">
-        <ScrollArea className="h-[calc(100svh-16rem-6rem-4rem)] md:h-[calc(100vh-20rem-6rem)]">
+        <ScrollArea className="h-full">
           <div className="px-6 pb-24 text-base leading-relaxed text-foreground/90">
             {article.content.split('\n\n').map((paragraph, i) => (
               <p key={i} className="mb-4">{paragraph}</p>
