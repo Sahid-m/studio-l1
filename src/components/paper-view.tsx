@@ -57,7 +57,7 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
   const views = [
     { component: <PaperInsights paper={paper} onWheel={handleWheel} />, label: 'Insights' },
     { component: <PaperCard paper={paper} />, label: 'Paper' },
-    { component: <PaperSource paper={paper} onSwipeLeft={() => scrollTo(1)} />, label: 'Source' },
+    { component: <PaperSource paper={paper} onSwipeLeft={() => scrollTo(1)} onSwipeRight={() => scrollTo(0)} />, label: 'Source' },
   ];
 
   return (

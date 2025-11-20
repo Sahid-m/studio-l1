@@ -56,7 +56,7 @@ export function VideoView({ video, onVerticalSwipe }: { video: VideoSummary, onV
   const views = [
     { component: <VideoInsights video={video} onWheel={handleWheel} />, label: 'Insights' },
     { component: <VideoCard video={video} />, label: 'Video' },
-    { component: <VideoSource video={video} onSwipeLeft={() => scrollTo(1)} />, label: 'Source' },
+    { component: <VideoSource video={video} onSwipeLeft={() => scrollTo(1)} onSwipeRight={() => scrollTo(0)} />, label: 'Source' },
   ];
 
   return (
