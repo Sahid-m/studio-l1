@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -18,11 +17,6 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
-  // This stops touch events on the child from bubbling up to the parent
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-  };
-
   useEffect(() => {
     if (!emblaApi) return;
     
@@ -31,7 +25,6 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
     const onSelect = () => {
       const newIndex = emblaApi.selectedScrollSnap();
       setSelectedIndex(newIndex);
-      // Only allow vertical swipe if the main card (index 1) is selected.
       onVerticalSwipe(newIndex === 1);
     };
 
@@ -65,8 +58,6 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
             <div 
               className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" 
               key={index}
-              // Add the touch handler to the non-central views
-              onTouchMove={index !== 1 ? handleTouchMove : undefined}
             >
               {view.component}
             </div>

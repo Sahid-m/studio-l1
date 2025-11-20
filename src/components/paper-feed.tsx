@@ -1,8 +1,7 @@
-
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import useEmblaCarousel from 'embla-carousel-react';
+import useEmblaCarousel, { type EmblaCarouselType } from 'embla-carousel-react';
 import { recommendPapers } from '@/ai/flows/recommend-papers';
 import { usePapers } from '@/context/paper-context';
 import type { FeedItem, ClinicalTrialPaper } from '@/lib/types';
@@ -11,7 +10,6 @@ import { VideoView } from './video-view';
 import { Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import type { EmblaCarouselType } from 'embla-carousel-react';
 
 export function PaperFeed() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, axis: 'y' });
@@ -25,7 +23,6 @@ export function PaperFeed() {
     canSwipeVertical.current = enabled;
   }, []);
 
-
   const handleSwipe = useCallback(() => {
     if (!emblaApi) return;
     const previousIndex = emblaApi.previousScrollSnap();
@@ -38,17 +35,20 @@ export function PaperFeed() {
   useEffect(() => {
     if (!emblaApi) return;
 
-    const onSelect = () => {
-      // Re-enable vertical swiping whenever the main carousel settles on a new item.
-      setVerticalSwipe(true); 
+    const onDragStart = (api: EmblaCarouselType, event: Event) => {
+      if (!canSwipeVertical.current) {
+        event.stopImmediatePropagation();
+      }
     };
 
-    emblaApi.on('select', onSelect);
+    emblaApi.on('settle', handleSwipe);
+    emblaApi.on('dragStart', onDragStart, true); // Use capture phase
 
     return () => {
-      emblaApi.off('select', onSelect);
+      emblaApi.off('settle', handleSwipe);
+      emblaApi.off('dragStart', onDragStart);
     };
-  }, [emblaApi, handleSwipe, setVerticalSwipe]);
+  }, [emblaApi, handleSwipe]);
 
 
   const handleGetRecommendations = async () => {
