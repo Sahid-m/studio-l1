@@ -56,9 +56,9 @@ const chartConfig = {
   }
 };
 
-export function PaperInsights({ paper, onWheel }: { paper: ClinicalTrialPaper, onWheel: (e: React.WheelEvent<HTMLDivElement>) => void }) {
+export function PaperInsights({ paper }: { paper: ClinicalTrialPaper }) {
   return (
-    <div className="h-full w-full bg-background" onWheel={onWheel}>
+    <div className="h-full w-full bg-background">
       <ScrollArea className="h-full">
         <div className="max-w-4xl mx-auto space-y-6 p-4 md:p-8 pb-24 md:pb-8">
             <div className="text-center pt-4 md:pt-0">

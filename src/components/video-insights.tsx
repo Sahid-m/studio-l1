@@ -71,9 +71,9 @@ const chartConfig = {
   }
 };
 
-export function VideoInsights({ video, onWheel }: { video: VideoSummary, onWheel: (e: React.WheelEvent<HTMLDivElement>) => void }) {
+export function VideoInsights({ video }: { video: VideoSummary }) {
   return (
-    <div className="h-full w-full bg-background" onWheel={onWheel}>
+    <div className="h-full w-full bg-background">
       <ScrollArea className="h-full">
         <div className="max-w-4xl mx-auto space-y-6 p-4 md:p-8 pb-24 md:pb-8">
             <div className="text-center pt-4 md:pt-0">

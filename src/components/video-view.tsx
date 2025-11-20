@@ -18,8 +18,9 @@ export function VideoView({ video, onVerticalSwipe }: { video: VideoSummary, onV
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
-  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    // No need to stop propagation here, the parent's dragStart handler will manage it.
+  // This stops touch events on the child from bubbling up to the parent
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation();
   };
 
   useEffect(() => {
@@ -51,7 +52,7 @@ export function VideoView({ video, onVerticalSwipe }: { video: VideoSummary, onV
   };
 
   const views = [
-    { component: <VideoInsights video={video} onWheel={handleWheel} />, label: 'Insights' },
+    { component: <VideoInsights video={video} />, label: 'Insights' },
     { component: <VideoCard video={video} />, label: 'Video' },
     { component: <VideoSource video={video} onSwipeLeft={() => scrollTo(1)} onSwipeRight={() => scrollTo(0)} />, label: 'Source' },
   ];
@@ -61,7 +62,12 @@ export function VideoView({ video, onVerticalSwipe }: { video: VideoSummary, onV
       <div className="overflow-hidden h-full" ref={emblaRef}>
         <div className="flex h-full">
           {views.map((view, index) => (
-            <div className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" key={index}>
+            <div 
+              className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" 
+              key={index}
+              // Add the touch handler to the non-central views
+              onTouchMove={index !== 1 ? handleTouchMove : undefined}
+            >
               {view.component}
             </div>
           ))}

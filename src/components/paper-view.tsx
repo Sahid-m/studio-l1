@@ -18,10 +18,9 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
-  // This allows vertical scrolling within the Insights component
-  // while preventing the main feed from swiping.
-  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-      // No need to stop propagation here, the parent's dragStart handler will manage it.
+  // This stops touch events on the child from bubbling up to the parent
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation();
   };
 
   useEffect(() => {
@@ -53,7 +52,7 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
   };
 
   const views = [
-    { component: <PaperInsights paper={paper} onWheel={handleWheel} />, label: 'Insights' },
+    { component: <PaperInsights paper={paper} />, label: 'Insights' },
     { component: <PaperCard paper={paper} />, label: 'Paper' },
     { component: <PaperSource paper={paper} onSwipeLeft={() => scrollTo(1)} onSwipeRight={() => scrollTo(0)} />, label: 'Source' },
   ];
@@ -63,7 +62,12 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
       <div className="overflow-hidden h-full" ref={emblaRef}>
         <div className="flex h-full">
           {views.map((view, index) => (
-            <div className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" key={index}>
+            <div 
+              className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" 
+              key={index}
+              // Add the touch handler to the non-central views
+              onTouchMove={index !== 1 ? handleTouchMove : undefined}
+            >
               {view.component}
             </div>
           ))}

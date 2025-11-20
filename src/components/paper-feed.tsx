@@ -38,22 +38,17 @@ export function PaperFeed() {
   useEffect(() => {
     if (!emblaApi) return;
 
-    const onDragStart = (api: EmblaCarouselType, event: Event) => {
-      if (!canSwipeVertical.current) {
-        event.stopImmediatePropagation();
-      }
+    const onSelect = () => {
+      // Re-enable vertical swiping whenever the main carousel settles on a new item.
+      setVerticalSwipe(true); 
     };
 
-    emblaApi.on('settle', handleSwipe);
-    // The `true` here enables the event listener in the "capture" phase.
-    // This allows it to intercept the drag event before the carousel's internal handlers do.
-    emblaApi.on('dragStart', onDragStart, true); 
+    emblaApi.on('select', onSelect);
 
     return () => {
-      emblaApi.off('settle', handleSwipe);
-      emblaApi.off('dragStart', onDragStart);
+      emblaApi.off('select', onSelect);
     };
-  }, [emblaApi, handleSwipe]);
+  }, [emblaApi, handleSwipe, setVerticalSwipe]);
 
 
   const handleGetRecommendations = async () => {
