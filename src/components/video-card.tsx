@@ -3,32 +3,16 @@
 
 import type { VideoSummary } from '@/lib/types';
 import Image from 'next/image';
-import { Play, BrainCircuit } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Play } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { useRef, useState, useEffect } from 'react';
-import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 
 export function VideoCard({ video }: { video: VideoSummary }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-  const router = useRouter();
-  const touchStartX = React.useRef(0);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const touchEndX = e.changedTouches[0].clientX;
-    if (touchStartX.current - touchEndX > 75) { // Swipe left
-      router.push(`/video/${video.id}/insights`);
-    }
-  };
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -77,7 +61,7 @@ export function VideoCard({ video }: { video: VideoSummary }) {
   }, []);
 
   return (
-    <div className="flex flex-col h-full w-full overflow-hidden border-0 shadow-none rounded-none bg-black" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+    <div className="flex flex-col h-full w-full overflow-hidden border-0 shadow-none rounded-none bg-black">
       <div className="relative h-full w-full flex items-center justify-center group" onClick={togglePlay}>
         <video
           ref={videoRef}
@@ -88,8 +72,8 @@ export function VideoCard({ video }: { video: VideoSummary }) {
           muted
         />
         
-        <div className="absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity opacity-0 group-hover:opacity-100 pointer-events-none">
-             <Play className={cn("h-20 w-20 text-white/80 drop-shadow-lg transition-opacity", isPlaying ? "opacity-0" : "opacity-100")} />
+        <div className={cn("absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity", isPlaying ? "opacity-0 group-hover:opacity-100" : "opacity-100")}>
+             <Play className={cn("h-20 w-20 text-white/80 drop-shadow-lg transition-transform duration-300", isPlaying ? "opacity-0 scale-150" : "opacity-100 scale-100")} />
         </div>
         
         {!isPlaying && (
@@ -102,7 +86,6 @@ export function VideoCard({ video }: { video: VideoSummary }) {
                 data-ai-hint={video.imageHint}
              />
              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent -z-10"/>
-             <Play className="h-20 w-20 text-white/80 drop-shadow-lg" />
           </div>
         )}
 

@@ -7,6 +7,7 @@ import {
   AlertTriangle,
   Target,
   Users,
+  BrainCircuit
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -55,11 +56,21 @@ const chartConfig = {
   }
 };
 
-export function PaperInsights({ paper }: { paper: ClinicalTrialPaper }) {
+export function PaperInsights({ paper, onWheel }: { paper: ClinicalTrialPaper, onWheel: (e: React.WheelEvent<HTMLDivElement>) => void }) {
   return (
-    <div className="h-full w-full bg-background">
+    <div className="h-full w-full bg-background" onWheel={onWheel}>
       <ScrollArea className="h-full">
-        <div className="max-w-4xl mx-auto space-y-6 p-4 md:p-8 pb-24">
+        <div className="max-w-4xl mx-auto space-y-6 p-4 md:p-8 pb-24 md:pb-8">
+            <div className="text-center pt-4 md:pt-0">
+                <BrainCircuit className="mx-auto h-10 w-10 text-primary" />
+                <h1 className="font-headline text-3xl md:text-4xl font-bold mt-4">
+                Clinical Trial Insights
+                </h1>
+                <p className="text-muted-foreground text-sm md:text-base mt-1 line-clamp-1">
+                For "{paper.title}"
+                </p>
+            </div>
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">

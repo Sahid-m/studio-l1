@@ -6,8 +6,8 @@ import { PaperProvider } from '@/context/paper-context';
 import { BottomNav } from '@/components/bottom-nav';
 
 export const metadata: Metadata = {
-  title: 'TrialFlow',
-  description: 'A new way to discover and read clinical trial papers.',
+  title: 'ArticleFlow',
+  description: 'A new way to discover and read articles.',
 };
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -24,14 +24,14 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased bg-background text-foreground">
         <PaperProvider>
-          <div className='md:hidden'>
+          <div className='md:hidden h-full'>
             {children}
             <BottomNav />
           </div>
           <div className='hidden md:block'>
             <div className="flex h-screen w-screen items-center justify-center">
               <div className="text-center">
-                <h1 className="text-2xl font-bold">TrialFlow</h1>
+                <h1 className="text-2xl font-bold">ArticleFlow</h1>
                 <p className="text-muted-foreground">
                   This app is optimized for a mobile experience.
                 </p>

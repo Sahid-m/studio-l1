@@ -2,10 +2,8 @@
 'use client';
 
 import type { ClinicalTrialPaper } from '@/lib/types';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Globe, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
-import Link from 'next/link';
 
 export function PaperSource({ paper, onSwipeLeft, onSwipeRight }: { paper: ClinicalTrialPaper, onSwipeLeft?: () => void, onSwipeRight?: () => void }) {
   return (

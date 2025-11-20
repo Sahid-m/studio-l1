@@ -6,17 +6,25 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { recommendPapers } from '@/ai/flows/recommend-papers';
 import { usePapers } from '@/context/paper-context';
 import type { FeedItem, ClinicalTrialPaper } from '@/lib/types';
-import { PaperCard } from './paper-card';
-import { VideoCard } from './video-card';
+import { PaperView } from './paper-view';
+import { VideoView } from './video-view';
 import { Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import type { EmblaCarouselType } from 'embla-carousel-react';
 
 export function PaperFeed() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, axis: 'y' });
   const { feedItems, setFeedItems, viewHistory, addToViewHistory, initialItems } = usePapers();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  
+  const canSwipeVertical = useRef(true);
+
+  const setVerticalSwipe = useCallback((enabled: boolean) => {
+    canSwipeVertical.current = enabled;
+  }, []);
+
 
   const handleSwipe = useCallback(() => {
     if (!emblaApi) return;
@@ -29,9 +37,19 @@ export function PaperFeed() {
 
   useEffect(() => {
     if (!emblaApi) return;
+
+    const onDragStart = (api: EmblaCarouselType, event: Event) => {
+        if (!canSwipeVertical.current) {
+            event.stopImmediatePropagation();
+        }
+    };
+
     emblaApi.on('settle', handleSwipe);
+    emblaApi.on('dragStart', onDragStart)
+
     return () => {
       emblaApi.off('settle', handleSwipe);
+      emblaApi.off('dragStart', onDragStart);
     };
   }, [emblaApi, handleSwipe]);
 
@@ -75,9 +93,9 @@ export function PaperFeed() {
           {feedItems.map((item) => (
             <div className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" key={item.id}>
               {item.type === 'paper' ? (
-                <PaperCard paper={item} />
+                <PaperView paper={item} onVerticalSwipe={setVerticalSwipe} />
               ) : (
-                <VideoCard video={item} />
+                <VideoView video={item} onVerticalSwipe={setVerticalSwipe} />
               )}
             </div>
           ))}
