@@ -18,13 +18,9 @@ export function VideoView({ video, onVerticalSwipe }: { video: VideoSummary, onV
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
-  const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
-    // This allows vertical scrolling within the Insights component
-    // while preventing the main feed from swiping.
-    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-      e.stopPropagation();
-    }
-  }, []);
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    // No need to stop propagation here, the parent's dragStart handler will manage it.
+  };
 
   useEffect(() => {
     if (!emblaApi) return;

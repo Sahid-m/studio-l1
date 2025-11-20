@@ -45,7 +45,9 @@ export function PaperFeed() {
     };
 
     emblaApi.on('settle', handleSwipe);
-    emblaApi.on('dragStart', onDragStart, true); // Use capture phase
+    // The `true` here enables the event listener in the "capture" phase.
+    // This allows it to intercept the drag event before the carousel's internal handlers do.
+    emblaApi.on('dragStart', onDragStart, true); 
 
     return () => {
       emblaApi.off('settle', handleSwipe);
