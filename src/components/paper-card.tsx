@@ -4,12 +4,13 @@
 import type { ClinicalTrialPaper } from '@/lib/types';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { Bookmark, Share2 } from 'lucide-react';
+import { Bookmark, Share2, BrainCircuit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { usePapers } from '@/context/paper-context';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
+import Link from 'next/link';
 
 export function PaperCard({ paper }: { paper: ClinicalTrialPaper }) {
   const { addSavedPaper, removeSavedPaper, isPaperSaved } = usePapers();
@@ -91,10 +92,18 @@ export function PaperCard({ paper }: { paper: ClinicalTrialPaper }) {
       </CardHeader>
       <CardContent className="flex-1 p-0">
         <ScrollArea className="h-full">
-          <div className="px-6 pb-24 text-base leading-relaxed text-foreground/90">
+          <div className="px-6 pb-6 text-base leading-relaxed text-foreground/90">
             {paper.summary.split('\n\n').map((paragraph, i) => (
               <p key={i} className="mb-4">{paragraph}</p>
             ))}
+          </div>
+          <div className="px-6 pb-24">
+             <Button asChild variant="outline" className="w-full">
+                <Link href={`/paper/${paper.id}/insights`}>
+                    <BrainCircuit className="mr-2 h-4 w-4" />
+                    View Insights
+                </Link>
+            </Button>
           </div>
         </ScrollArea>
       </CardContent>

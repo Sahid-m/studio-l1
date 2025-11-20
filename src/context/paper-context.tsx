@@ -1,8 +1,9 @@
 
 'use client';
 
-import type { ClinicalTrialPaper } from '@/lib/types';
-import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import type { ClinicalTrialPaper, FeedItem } from '@/lib/types';
+import { initialFeedItems } from '@/lib/data';
+import React, { createContext, useContext, useState, useEffect, type ReactNode, Dispatch, SetStateAction } from 'react';
 
 interface PaperContextType {
   savedPapers: ClinicalTrialPaper[];
@@ -11,6 +12,10 @@ interface PaperContextType {
   removeSavedPaper: (paperId: string) => void;
   isPaperSaved: (paperId: string) => boolean;
   addToViewHistory: (paperTitle: string) => void;
+  feedItems: FeedItem[];
+  setFeedItems: Dispatch<SetStateAction<FeedItem[]>>;
+  getFeedItemById: (id: string) => FeedItem | undefined;
+  initialItems: FeedItem[];
 }
 
 const PaperContext = createContext<PaperContextType | undefined>(undefined);
@@ -18,6 +23,7 @@ const PaperContext = createContext<PaperContextType | undefined>(undefined);
 export const PaperProvider = ({ children }: { children: ReactNode }) => {
   const [savedPapers, setSavedPapers] = useState<ClinicalTrialPaper[]>([]);
   const [viewHistory, setViewHistory] = useState<string[]>([]);
+  const [feedItems, setFeedItems] = useState<FeedItem[]>(initialFeedItems);
 
   useEffect(() => {
     try {
@@ -59,8 +65,23 @@ export const PaperProvider = ({ children }: { children: ReactNode }) => {
     });
   }
 
+  const getFeedItemById = (id: string): FeedItem | undefined => {
+    return feedItems.find(item => item.id === id);
+  }
+
   return (
-    <PaperContext.Provider value={{ savedPapers, addSavedPaper, removeSavedPaper, isPaperSaved, viewHistory, addToViewHistory }}>
+    <PaperContext.Provider value={{ 
+        savedPapers, 
+        addSavedPaper, 
+        removeSavedPaper, 
+        isPaperSaved, 
+        viewHistory, 
+        addToViewHistory,
+        feedItems,
+        setFeedItems,
+        getFeedItemById,
+        initialItems: initialFeedItems
+    }}>
       {children}
     </PaperContext.Provider>
   );

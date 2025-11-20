@@ -3,29 +3,20 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
-import type { EmblaCarouselType } from 'embla-carousel-react';
 import { recommendPapers } from '@/ai/flows/recommend-papers';
 import { usePapers } from '@/context/paper-context';
 import type { FeedItem, ClinicalTrialPaper } from '@/lib/types';
-import { initialFeedItems } from '@/lib/data';
-import { PaperView } from './paper-view';
-import { VideoView } from './video-view';
+import { PaperCard } from './paper-card';
+import { VideoCard } from './video-card';
 import { Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
 export function PaperFeed() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, axis: 'y' });
-  const { addToViewHistory, viewHistory } = usePapers();
-  const [feedItems, setFeedItems] = useState<FeedItem[]>(initialFeedItems);
+  const { feedItems, setFeedItems, viewHistory, addToViewHistory, initialItems } = usePapers();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  
-  const canSwipeVertical = useRef(true);
-
-  const setVerticalSwipe = useCallback((enabled: boolean) => {
-    canSwipeVertical.current = enabled;
-  }, []);
 
   const handleSwipe = useCallback(() => {
     if (!emblaApi) return;
@@ -38,19 +29,9 @@ export function PaperFeed() {
 
   useEffect(() => {
     if (!emblaApi) return;
-
-    const onDragStart = (api: EmblaCarouselType, event: Event) => {
-      if (!canSwipeVertical.current) {
-        event.stopImmediatePropagation();
-      }
-    };
-
     emblaApi.on('settle', handleSwipe);
-    emblaApi.on('dragStart', onDragStart, true); // Use true for capture phase
-
     return () => {
       emblaApi.off('settle', handleSwipe);
-      emblaApi.off('dragStart', onDragStart, true);
     };
   }, [emblaApi, handleSwipe]);
 
@@ -66,7 +47,7 @@ export function PaperFeed() {
       const result = await recommendPapers({ viewHistory });
       const recommendedTitles = result.recommendations;
       
-      const allPossiblePapers = initialFeedItems.filter(item => item.type === 'paper') as ClinicalTrialPaper[];
+      const allPossiblePapers = initialItems.filter(item => item.type === 'paper') as ClinicalTrialPaper[];
 
       const newPapers = allPossiblePapers.filter(paper => 
         recommendedTitles.includes(paper.title) && !feedItems.some(item => item.id === paper.id)
@@ -94,9 +75,9 @@ export function PaperFeed() {
           {feedItems.map((item) => (
             <div className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" key={item.id}>
               {item.type === 'paper' ? (
-                <PaperView paper={item} onVerticalSwipe={setVerticalSwipe} />
+                <PaperCard paper={item} />
               ) : (
-                <VideoView video={item} onVerticalSwipe={setVerticalSwipe} />
+                <VideoCard video={item} />
               )}
             </div>
           ))}

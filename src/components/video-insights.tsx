@@ -4,13 +4,8 @@
 import type { VideoSummary } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  Film,
-  ThumbsUp,
-  BarChart,
   Eye,
-  MessageCircle,
-  BrainCircuit,
-  Clock,
+  ThumbsUp,
 } from 'lucide-react';
 import {
   ChartContainer,
@@ -21,9 +16,9 @@ import {
   Bar,
   BarChart as RechartsBarChart,
   CartesianGrid,
+  LabelList,
   XAxis,
   YAxis,
-  LabelList,
 } from 'recharts';
 import { ScrollArea } from './ui/scroll-area';
 
@@ -46,21 +41,11 @@ const chartConfig = {
   },
 };
 
-export function VideoInsights({ video, onWheel }: { video: VideoSummary, onWheel: (e: React.WheelEvent<HTMLDivElement>) => void }) {
+export function VideoInsights({ video }: { video: VideoSummary }) {
   return (
-    <div className="h-full w-full bg-background" onWheel={onWheel}>
+    <div className="h-full w-full bg-background">
       <ScrollArea className="h-full">
-        <div className="max-w-4xl mx-auto space-y-6 p-4 md:p-8 pb-24 md:pb-8">
-          <div className="text-center pt-4 md:pt-0">
-            <BrainCircuit className="mx-auto h-10 w-10 text-primary" />
-            <h1 className="font-headline text-3xl md:text-4xl font-bold mt-4">
-              Video Insights
-            </h1>
-            <p className="text-muted-foreground text-sm md:text-base mt-1 line-clamp-1">
-              For "{video.title}"
-            </p>
-          </div>
-
+        <div className="max-w-4xl mx-auto space-y-6 p-4 md:p-8 pb-24">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">

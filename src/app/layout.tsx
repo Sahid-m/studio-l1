@@ -24,8 +24,23 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased bg-background text-foreground">
         <PaperProvider>
-          {children}
-          <BottomNav />
+          <div className='md:hidden'>
+            {children}
+            <BottomNav />
+          </div>
+          <div className='hidden md:block'>
+            <div className="flex h-screen w-screen items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-2xl font-bold">TrialFlow</h1>
+                <p className="text-muted-foreground">
+                  This app is optimized for a mobile experience.
+                </p>
+                <p className="text-muted-foreground">
+                  Please open it on a mobile device or use your browser's developer tools to simulate one.
+                </p>
+              </div>
+            </div>
+          </div>
           <Toaster />
         </PaperProvider>
       </body>
