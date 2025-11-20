@@ -19,9 +19,10 @@ export function VideoView({ video, onVerticalSwipe }: { video: VideoSummary, onV
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+    // This allows vertical scrolling within the Insights component
+    // while preventing the main feed from swiping.
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-      // User is scrolling vertically inside the Insights content
-      // The logic in PaperFeed will now prevent vertical swipe
+      e.stopPropagation();
     }
   }, []);
 
@@ -33,7 +34,7 @@ export function VideoView({ video, onVerticalSwipe }: { video: VideoSummary, onV
     const onSelect = () => {
       const newIndex = emblaApi.selectedScrollSnap();
       setSelectedIndex(newIndex);
-      // Disable vertical swiping if we are on the Insights (0) or Source (2) page.
+      // Only allow vertical swipe if the main card (index 1) is selected.
       onVerticalSwipe(newIndex === 1);
     };
 

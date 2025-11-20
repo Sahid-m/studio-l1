@@ -39,13 +39,15 @@ export function PaperFeed() {
     if (!emblaApi) return;
 
     const onDragStart = (api: EmblaCarouselType, event: Event) => {
-        if (!canSwipeVertical.current) {
-            event.stopImmediatePropagation();
-        }
+      // This is the crucial part. If vertical swiping is not allowed,
+      // we stop the event from propagating to Embla's internal handlers.
+      if (!canSwipeVertical.current) {
+        event.stopImmediatePropagation();
+      }
     };
 
     emblaApi.on('settle', handleSwipe);
-    emblaApi.on('dragStart', onDragStart)
+    emblaApi.on('dragStart', onDragStart);
 
     return () => {
       emblaApi.off('settle', handleSwipe);
