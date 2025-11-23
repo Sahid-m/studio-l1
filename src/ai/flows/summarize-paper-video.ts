@@ -24,9 +24,9 @@ export type SummarizePaperToVideoInput = z.infer<
 >;
 
 // No explicit output schema needed for streaming responses
-export function summarizePaperToVideo(
+export async function summarizePaperToVideo(
   input: SummarizePaperToVideoInput
-): ReadableStream<Uint8Array> {
+): Promise<ReadableStream<Uint8Array>> {
   // We are not using a formal Genkit flow here to have fine-grained
   // control over the ReadableStream for simulation purposes.
   
