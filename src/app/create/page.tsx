@@ -42,7 +42,7 @@ export default function CreateVideoPage() {
     setGenerationStatus("Initializing video generation...");
 
     try {
-      const stream = summarizePaperToVideo(data);
+      const stream = await summarizePaperToVideo(data);
       const reader = stream.getReader();
       const decoder = new TextDecoder();
 
