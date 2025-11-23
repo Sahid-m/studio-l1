@@ -3,16 +3,18 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Bookmark, Search, Sparkles, User } from 'lucide-react';
+import { Home, Bookmark, Search, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AppStateContext } from '@/context/app-state-context';
+import { AuthContext } from '@/context/auth-context';
 import { useContext } from 'react';
 
 export function BottomNav() {
   const pathname = usePathname();
   const appContext = useContext(AppStateContext);
+  const authContext = useContext(AuthContext);
 
-  if (appContext?.hasCompletedOnboarding === false) {
+  if (authContext?.user === null || appContext?.hasCompletedOnboarding === false) {
     return null;
   }
 
