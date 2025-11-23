@@ -45,12 +45,15 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
   };
 
   const handleWheel = (e: React.WheelEvent) => {
+    // If the user is scrolling vertically inside the component,
+    // stop the event from propagating to the parent vertical carousel.
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
       e.stopPropagation();
     }
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
+    // Similar to handleWheel, but for touch devices.
     e.stopPropagation();
   }
 

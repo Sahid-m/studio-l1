@@ -170,8 +170,10 @@ export function PaperInsights({ paper, onWheel, onTouchMove }: PaperInsightsProp
                 </div>
               </>
             ) : (
-                <div className="text-center py-12">
-                    <p className="text-muted-foreground">Detailed insights for this paper are not yet available.</p>
+                <div className="text-center py-16 px-4">
+                    <BrainCircuit className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <h3 className="mt-4 text-lg font-semibold">Insights Coming Soon</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">Detailed AI-powered insights for this paper are not yet available. Check back later!</p>
                 </div>
             )}
         </div>
