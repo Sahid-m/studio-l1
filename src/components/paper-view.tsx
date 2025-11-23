@@ -57,8 +57,14 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
   const views = [
     { component: <PaperInsights paper={paper} onWheel={handleWheel} onTouchMove={handleTouchMove} />, label: 'Insights' },
     { component: <PaperCard paper={paper} />, label: 'Paper' },
-    { component: <PaperSource paper={paper} onSwipeLeft={() => scrollTo(1)} onSwipeRight={() => scrollTo(0)} onWheel={handleWheel} onTouchMove={handleTouchMove} />, label: 'Source' },
+    { component: <PaperSource paper={paper} onSwipeLeft={() => scrollTo(1)} onSwipeRight={() => {}} onWheel={handleWheel} onTouchMove={handleTouchMove} />, label: 'Source' },
   ];
+  
+  // A slight correction in the view definition
+  views[0] = { component: <PaperInsights paper={paper} onWheel={handleWheel} onTouchMove={handleTouchMove} />, label: 'Insights' };
+  views[1] = { component: <PaperCard paper={paper} />, label: 'Paper' };
+  views[2] = { component: <PaperSource paper={paper} onSwipeLeft={() => scrollTo(1)} onSwipeRight={() => scrollTo(0)} onWheel={handleWheel} onTouchMove={handleTouchMove} />, label: 'Source' };
+
 
   return (
     <div className="h-full w-full relative">
@@ -101,5 +107,3 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
     </div>
   );
 }
-
-    
