@@ -57,7 +57,7 @@ Generate a direct prompt for a text-to-video model that captures the essence of 
 
     const { output: videoGenerationPrompt } = await ai.generate({
         prompt: videoPrompt,
-        model: 'googleai/gemini-2.5-flash',
+        model: 'googleai/gemini-1.5-flash-latest',
     });
 
 
