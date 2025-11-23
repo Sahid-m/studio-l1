@@ -24,6 +24,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function CreateVideoPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [generationStatus, setGenerationStatus] = useState<string | null>(null);
   const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -38,22 +39,41 @@ export default function CreateVideoPage() {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsLoading(true);
     setGeneratedVideoUrl(null);
-    
+    setGenerationStatus("Initializing video generation...");
+
     try {
-      // This now calls our simulated flow
-      const result = await summarizePaperToVideo(data);
+      const stream = summarizePaperToVideo(data);
+      const reader = stream.getReader();
+      const decoder = new TextDecoder();
 
-      if (result.videoUrl) {
-        // We directly get the final video URL from the simulated flow
-        setGeneratedVideoUrl(result.videoUrl);
-
-        toast({
-          title: 'Video Generated!',
-          description: 'Your video summary has been successfully created.',
-        });
-      } else {
-        throw new Error('Video generation did not return a URL.');
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n').filter(line => line.trim() !== '');
+        
+        for (const line of lines) {
+          try {
+            const update = JSON.parse(line);
+            if (update.status === 'complete') {
+              setGeneratedVideoUrl(update.videoUrl);
+              toast({
+                title: 'Video Generated!',
+                description: 'Your video summary has been successfully created.',
+              });
+              setGenerationStatus(null);
+            } else if (update.status === 'error') {
+               throw new Error(update.message || "An unknown streaming error occurred.");
+            } else {
+              setGenerationStatus(update.status);
+            }
+          } catch (e) {
+            console.error("Failed to parse stream line:", line, e);
+          }
+        }
       }
+
     } catch (error: any) {
       console.error('Video generation failed:', error);
       toast({
@@ -61,13 +81,14 @@ export default function CreateVideoPage() {
         title: 'Uh oh! Something went wrong.',
         description: error.message || 'There was a problem generating your video.',
       });
+       setGenerationStatus(null);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="container mx-auto max-w-2xl px-4 py-8 pb-24">
+    <div className="container mx-auto max-w-4xl px-4 py-8 pb-24">
       <div className="flex flex-col items-center text-center mb-8">
         <Sparkles className="h-12 w-12 text-primary" />
         <h1 className="font-headline text-4xl font-bold mt-4">Create Video Summary</h1>
@@ -76,7 +97,7 @@ export default function CreateVideoPage() {
         </p>
       </div>
 
-      <Card>
+      <Card className="max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>Video Generation</CardTitle>
           <CardDescription>Enter a paper URL and a prompt to create your video.</CardDescription>
@@ -126,18 +147,18 @@ export default function CreateVideoPage() {
         </CardContent>
       </Card>
       
-      {isLoading && (
-         <Alert className="mt-8">
+      {isLoading && generationStatus && (
+         <Alert className="mt-8 max-w-2xl mx-auto">
             <Sparkles className="h-4 w-4" />
-            <AlertTitle>Hold tight! AI is at work.</AlertTitle>
+            <AlertTitle>AI is at work...</AlertTitle>
             <AlertDescription>
-                Video generation can take a minute or two. Please don't close this page.
+                {generationStatus}
             </AlertDescription>
         </Alert>
       )}
 
       {generatedVideoUrl && (
-        <Card className="mt-8">
+        <Card className="mt-8 max-w-2xl mx-auto">
           <CardHeader>
             <CardTitle>Your Generated Video</CardTitle>
           </CardHeader>
@@ -147,6 +168,7 @@ export default function CreateVideoPage() {
                 src={generatedVideoUrl}
                 controls
                 className="w-full h-full object-contain"
+                autoPlay
               />
             </div>
           </CardContent>
