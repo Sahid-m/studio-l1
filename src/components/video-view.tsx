@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -17,37 +18,46 @@ export function VideoView({ video, onVerticalSwipe }: { video: VideoSummary, onV
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    const newIndex = emblaApi.selectedScrollSnap();
+    setSelectedIndex(newIndex);
+    onVerticalSwipe(newIndex === 1);
+  }, [emblaApi, onVerticalSwipe]);
+
   useEffect(() => {
     if (!emblaApi) return;
     
     setScrollSnaps(emblaApi.scrollSnapList());
-
-    const onSelect = () => {
-      const newIndex = emblaApi.selectedScrollSnap();
-      setSelectedIndex(newIndex);
-      onVerticalSwipe(newIndex === 1);
-    };
+    onSelect();
 
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
     
-    // Initial check
-    onSelect();
-
     return () => {
       emblaApi.off('select', onSelect);
       emblaApi.off('reInit', onSelect);
     };
-  }, [emblaApi, onVerticalSwipe]);
+  }, [emblaApi, onSelect]);
 
   const scrollTo = (index: number) => {
     emblaApi?.scrollTo(index);
   };
+  
+  const handleWheel = (e: React.WheelEvent) => {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      e.stopPropagation();
+    }
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.stopPropagation();
+  }
 
   const views = [
-    { component: <VideoInsights video={video} />, label: 'Insights' },
+    { component: <VideoInsights video={video} onWheel={handleWheel} onTouchMove={handleTouchMove} />, label: 'Insights' },
     { component: <VideoCard video={video} />, label: 'Video' },
-    { component: <VideoSource video={video} onSwipeLeft={() => scrollTo(1)} onSwipeRight={() => scrollTo(0)} />, label: 'Source' },
+    { component: <VideoSource video={video} onSwipeLeft={() => scrollTo(1)} onSwipeRight={() => scrollTo(0)} onWheel={handleWheel} onTouchMove={handleTouchMove}/>, label: 'Source' },
   ];
 
   return (

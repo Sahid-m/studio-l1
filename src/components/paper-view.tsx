@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -17,37 +18,46 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    const newIndex = emblaApi.selectedScrollSnap();
+    setSelectedIndex(newIndex);
+    onVerticalSwipe(newIndex === 1);
+  }, [emblaApi, onVerticalSwipe]);
+
   useEffect(() => {
     if (!emblaApi) return;
     
     setScrollSnaps(emblaApi.scrollSnapList());
-
-    const onSelect = () => {
-      const newIndex = emblaApi.selectedScrollSnap();
-      setSelectedIndex(newIndex);
-      onVerticalSwipe(newIndex === 1);
-    };
+    onSelect();
 
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
-    
-    // Initial check
-    onSelect();
 
     return () => {
       emblaApi.off('select', onSelect);
       emblaApi.off('reInit', onSelect);
     };
-  }, [emblaApi, onVerticalSwipe]);
+  }, [emblaApi, onSelect]);
 
   const scrollTo = (index: number) => {
     emblaApi?.scrollTo(index);
   };
 
+  const handleWheel = (e: React.WheelEvent) => {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      e.stopPropagation();
+    }
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.stopPropagation();
+  }
+
   const views = [
-    { component: <PaperInsights paper={paper} />, label: 'Insights' },
+    { component: <PaperInsights paper={paper} onWheel={handleWheel} onTouchMove={handleTouchMove} />, label: 'Insights' },
     { component: <PaperCard paper={paper} />, label: 'Paper' },
-    { component: <PaperSource paper={paper} onSwipeLeft={() => scrollTo(1)} onSwipeRight={() => scrollTo(0)} />, label: 'Source' },
+    { component: <PaperSource paper={paper} onSwipeLeft={() => scrollTo(1)} onSwipeRight={() => scrollTo(0)} onWheel={handleWheel} onTouchMove={handleTouchMove} />, label: 'Source' },
   ];
 
   return (

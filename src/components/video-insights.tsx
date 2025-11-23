@@ -28,6 +28,7 @@ import {
 } from 'recharts';
 import { ScrollArea } from './ui/scroll-area';
 import { Progress } from './ui/progress';
+import React from 'react';
 
 const engagementData = [
   { metric: 'Likes', value: 1200 },
@@ -71,9 +72,15 @@ const chartConfig = {
   }
 };
 
-export function VideoInsights({ video }: { video: VideoSummary }) {
+type VideoInsightsProps = {
+    video: VideoSummary;
+    onWheel: (event: React.WheelEvent) => void;
+    onTouchMove: (event: React.TouchEvent) => void;
+};
+
+export function VideoInsights({ video, onWheel, onTouchMove }: VideoInsightsProps) {
   return (
-    <div className="h-full w-full bg-background">
+    <div className="h-full w-full bg-background" onWheel={onWheel} onTouchMove={onTouchMove}>
       <ScrollArea className="h-full">
         <div className="max-w-4xl mx-auto space-y-6 p-4 md:p-8 pb-24 md:pb-8">
             <div className="text-center pt-4 md:pt-0">

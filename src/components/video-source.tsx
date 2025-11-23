@@ -4,10 +4,20 @@
 import type { VideoSummary } from '@/lib/types';
 import { Globe, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
+import React from 'react';
 
-export function VideoSource({ video, onSwipeLeft, onSwipeRight }: { video: VideoSummary, onSwipeLeft?: () => void, onSwipeRight?: () => void }) {
+type VideoSourceProps = {
+  video: VideoSummary;
+  onSwipeLeft?: () => void;
+  onSwipeRight?: () => void;
+  onWheel: (event: React.WheelEvent) => void;
+  onTouchMove: (event: React.TouchEvent) => void;
+};
+
+
+export function VideoSource({ video, onSwipeLeft, onSwipeRight, onWheel, onTouchMove }: VideoSourceProps) {
   return (
-    <div className="h-full w-full bg-muted/20">
+    <div className="h-full w-full bg-muted/20" onWheel={onWheel} onTouchMove={onTouchMove}>
       <div className="flex h-full w-full flex-col">
         <header className="flex items-center justify-between border-b bg-background p-2 md:p-4">
           <div className="flex items-center gap-2">

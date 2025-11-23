@@ -1,6 +1,7 @@
+
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import useEmblaCarousel, { type EmblaCarouselType } from 'embla-carousel-react';
 import { recommendPapers } from '@/ai/flows/recommend-papers';
 import { usePapers } from '@/context/paper-context';
@@ -10,13 +11,15 @@ import { VideoView } from './video-view';
 import { Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { AppStateContext } from '@/context/app-state-context';
 
 export function PaperFeed() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, axis: 'y' });
   const { feedItems, setFeedItems, viewHistory, addToViewHistory, initialItems } = usePapers();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  
+  const appContext = React.useContext(AppStateContext);
+
   const canSwipeVertical = useRef(true);
 
   const setVerticalSwipe = useCallback((enabled: boolean) => {
@@ -31,6 +34,13 @@ export function PaperFeed() {
       addToViewHistory(previousItem.title);
     }
   }, [emblaApi, feedItems, addToViewHistory]);
+
+  const filteredFeedItems = useMemo(() => {
+    if (appContext?.contentPreference === 'both' || !appContext?.contentPreference) {
+      return feedItems;
+    }
+    return feedItems.filter(item => item.type === appContext.contentPreference);
+  }, [feedItems, appContext?.contentPreference]);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -87,7 +97,7 @@ export function PaperFeed() {
     <div className="h-full w-full relative">
       <div className="overflow-hidden h-full" ref={emblaRef}>
         <div className="flex flex-col h-full">
-          {feedItems.map((item) => (
+          {filteredFeedItems.map((item) => (
             <div className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" key={item.id}>
               {item.type === 'paper' ? (
                 <PaperView paper={item} onVerticalSwipe={setVerticalSwipe} />

@@ -26,6 +26,7 @@ import {
   YAxis,
 } from 'recharts';
 import { ScrollArea } from './ui/scroll-area';
+import React from 'react';
 
 const primaryEndpointData = [
     { name: 'Investigational Drug', value: -2.5, label: '-2.5 pts' },
@@ -56,9 +57,15 @@ const chartConfig = {
   }
 };
 
-export function PaperInsights({ paper }: { paper: ClinicalTrialPaper }) {
+type PaperInsightsProps = {
+  paper: ClinicalTrialPaper;
+  onWheel: (event: React.WheelEvent) => void;
+  onTouchMove: (event: React.TouchEvent) => void;
+};
+
+export function PaperInsights({ paper, onWheel, onTouchMove }: PaperInsightsProps) {
   return (
-    <div className="h-full w-full bg-background">
+    <div className="h-full w-full bg-background" onWheel={onWheel} onTouchMove={onTouchMove}>
       <ScrollArea className="h-full">
         <div className="max-w-4xl mx-auto space-y-6 p-4 md:p-8 pb-24 md:pb-8">
             <div className="text-center pt-4 md:pt-0">
@@ -144,7 +151,7 @@ export function PaperInsights({ paper }: { paper: ClinicalTrialPaper }) {
                          <LabelList dataKey="count" position="top" offset={8} className="fill-foreground text-xs" />
                     </Bar>
                   </RechartsBarChart>
-                </ChartContainer>
+                </Container>
               </CardContent>
             </Card>
           </div>
