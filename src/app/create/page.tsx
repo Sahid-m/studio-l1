@@ -40,23 +40,12 @@ export default function CreateVideoPage() {
     setGeneratedVideoUrl(null);
     
     try {
+      // This now calls our simulated flow
       const result = await summarizePaperToVideo(data);
-      if (result.videoUrl) {
-        
-        // The URL from Veo is temporary, so we fetch it and convert to a data URI to make it permanent.
-        const videoDownloadResponse = await fetch(
-            `${result.videoUrl}&key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`
-          );
 
-        if (!videoDownloadResponse.ok || !videoDownloadResponse.body) {
-            throw new Error('Failed to download video');
-        }
-        
-        const videoBuffer = await videoDownloadResponse.arrayBuffer();
-        const base64Video = Buffer.from(videoBuffer).toString('base64');
-        const videoDataUri = `data:video/mp4;base64,${base64Video}`;
-        
-        setGeneratedVideoUrl(videoDataUri);
+      if (result.videoUrl) {
+        // We directly get the final video URL from the simulated flow
+        setGeneratedVideoUrl(result.videoUrl);
 
         toast({
           title: 'Video Generated!',

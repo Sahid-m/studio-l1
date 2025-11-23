@@ -15,7 +15,6 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import {extractArticleContent} from '@/services/article-extractor';
-import { googleAI } from '@genkit-ai/google-genai';
 
 const SummarizePaperToVideoInputSchema = z.object({
   paperUrl: z.string().url().describe('URL of the paper to summarize.'),
@@ -45,6 +44,7 @@ const summarizePaperToVideoFlow = ai.defineFlow(
     outputSchema: SummarizePaperToVideoOutputSchema,
   },
   async ({paperUrl, prompt}) => {
+    // We can still simulate the text parts for realism
     const paperContent = await extractArticleContent(paperUrl);
 
     // A prompt to first summarize the content, making it suitable for a video script.
@@ -53,49 +53,23 @@ const summarizePaperToVideoFlow = ai.defineFlow(
 Paper Content:
 ${paperContent.substring(0, 4000)}...
 
-Generate a direct prompt for a text-to-video model that captures the essence of this script. The prompt should be a single, descriptive paragraph. For example: "An animated video explaining the efficacy of a new drug for Alzheimer's disease, showing brain neurons and cognitive improvement."`;
+Generate a direct prompt for a text-to-video model that captures the essence of this script.`;
 
     const { output: videoGenerationPrompt } = await ai.generate({
         prompt: videoPrompt,
         model: 'googleai/gemini-1.5-flash-latest',
     });
 
-
     if (!videoGenerationPrompt) {
         throw new Error('Failed to generate video creation prompt.');
     }
-
-    let { operation } = await ai.generate({
-        model: googleAI.model('veo-2.0-generate-001'),
-        prompt: videoGenerationPrompt as string,
-        config: {
-          durationSeconds: 8,
-          aspectRatio: '9:16',
-        },
-      });
-
-      if (!operation) {
-        throw new Error('Expected the model to return an operation');
-      }
     
-      // Wait until the operation completes.
-      while (!operation.done) {
-        operation = await ai.checkOperation(operation);
-        // Sleep for 5 seconds before checking again.
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-      }
-    
-      if (operation.error) {
-        throw new Error('failed to generate video: ' + operation.error.message);
-      }
-    
-      const video = operation.output?.message?.content.find((p) => !!p.media);
-      if (!video || !video.media?.url) {
-        throw new Error('Failed to find the generated video');
-      }
+    // SIMULATION: Wait for a bit to simulate a long-running process
+    await new Promise(resolve => setTimeout(resolve, 15000));
 
+    // SIMULATION: Return a static, sample video URL
     return {
-      videoUrl: video.media.url,
+      videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     };
   }
 );
