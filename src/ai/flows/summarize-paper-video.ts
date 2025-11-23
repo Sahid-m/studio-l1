@@ -44,25 +44,9 @@ const summarizePaperToVideoFlow = ai.defineFlow(
     outputSchema: SummarizePaperToVideoOutputSchema,
   },
   async ({paperUrl, prompt}) => {
-    // We can still simulate the text parts for realism
-    const paperContent = await extractArticleContent(paperUrl);
-
-    // A prompt to first summarize the content, making it suitable for a video script.
-    const videoPrompt = `Based on the following clinical trial paper content, create a concise, engaging script for a 15-second animated explainer video. The video should follow this user's prompt: "${prompt}".
-
-Paper Content:
-${paperContent.substring(0, 4000)}...
-
-Generate a direct prompt for a text-to-video model that captures the essence of this script.`;
-
-    const { output: videoGenerationPrompt } = await ai.generate({
-        prompt: videoPrompt,
-        model: 'googleai/gemini-1.5-flash-latest',
-    });
-
-    if (!videoGenerationPrompt) {
-        throw new Error('Failed to generate video creation prompt.');
-    }
+    // SIMULATION: We are not calling any models, just pretending to.
+    // We can still get the paper content to make it feel more real if needed.
+    await extractArticleContent(paperUrl);
     
     // SIMULATION: Wait for a bit to simulate a long-running process
     await new Promise(resolve => setTimeout(resolve, 15000));
