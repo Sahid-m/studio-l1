@@ -9,13 +9,12 @@ import React from 'react';
 type PaperSourceProps = {
   paper: ClinicalTrialPaper;
   onSwipeLeft?: () => void;
-  onSwipeRight?: () => void;
   onWheel: (event: React.WheelEvent) => void;
   onTouchMove: (event: React.TouchEvent) => void;
 };
 
 
-export function PaperSource({ paper, onSwipeLeft, onSwipeRight, onWheel, onTouchMove }: PaperSourceProps) {
+export function PaperSource({ paper, onSwipeLeft, onWheel, onTouchMove }: PaperSourceProps) {
   return (
     <div className="h-full w-full bg-muted/20" onWheel={onWheel} onTouchMove={onTouchMove}>
       <div className="flex h-full w-full flex-col">
@@ -48,13 +47,6 @@ export function PaperSource({ paper, onSwipeLeft, onSwipeRight, onWheel, onTouch
                 {onSwipeLeft && (
                     <Button size="icon" variant="secondary" onClick={onSwipeLeft} className='rounded-full'>
                         <ArrowLeft />
-                    </Button>
-                )}
-            </div>
-            <div className="absolute inset-y-0 right-0 hidden md:flex items-center justify-center px-4 bg-gradient-to-l from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                {onSwipeRight && (
-                    <Button size="icon" variant="secondary" onClick={onSwipeRight} className='rounded-full'>
-                        <ArrowRight />
                     </Button>
                 )}
             </div>
