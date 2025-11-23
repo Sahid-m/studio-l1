@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { AppStateContext } from '@/context/app-state-context';
 import { AuthContext } from '@/context/auth-context';
 
-const GUEST_ROUTES = ['/login'];
+const GUEST_ROUTE = '/login';
 
 // This component handles all top-level redirects for the app.
 export function AppRedirect() {
@@ -27,7 +27,7 @@ export function AppRedirect() {
     // Don't redirect while loading auth state
     if (isLoading) return;
 
-    const isGuestRoute = GUEST_ROUTES.includes(pathname);
+    const isGuestRoute = pathname === GUEST_ROUTE;
     const isOnboardingRoute = pathname === '/onboarding';
 
     if (user) {
@@ -42,8 +42,8 @@ export function AppRedirect() {
     } else {
       // User is not logged in
       if (!isGuestRoute) {
-        // Non-logged-in users should be on guest routes
-        router.replace('/login');
+        // Non-logged-in users should be on the guest route
+        router.replace(GUEST_ROUTE);
       }
     }
 

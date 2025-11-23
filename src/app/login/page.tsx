@@ -15,44 +15,40 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { BrainCircuit, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-const loginSchema = z.object({
-  email: z.string().email({ message: 'Please enter a valid email address.' }),
-  password: z.string().min(1, { message: 'Password is required.' }),
+const signUpSchema = z.object({
+  name: z.string().min(2, { message: 'Please enter a name.' }),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type SignUpFormValues = z.infer<typeof signUpSchema>;
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const authContext = useContext(AuthContext);
   const { toast } = useToast();
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<SignUpFormValues>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      name: '',
     },
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (data: SignUpFormValues) => {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     if (authContext) {
-        // In a real app, you'd get user data from an API
-        authContext.login({ email: data.email, name: 'Dr. Smith' });
+        authContext.login({ name: data.name });
         toast({
-            title: 'Login Successful',
-            description: 'Welcome back!',
+            title: 'Account Created!',
+            description: `Welcome to MedLens, ${data.name}!`,
         });
-        router.push('/');
+        router.push('/onboarding');
     } else {
          toast({
             variant: 'destructive',
-            title: 'Login failed',
+            title: 'Sign-up failed',
             description: 'Authentication service is not available.',
         });
     }
@@ -72,33 +68,20 @@ export default function LoginPage() {
         </div>
         <Card>
           <CardHeader>
-            <CardTitle>Welcome Back, Doctor</CardTitle>
-            <CardDescription>Sign in to access your personalized feed.</CardDescription>
+            <CardTitle>Create Your Account</CardTitle>
+            <CardDescription>Join the future of clinical trial analysis.</CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email Address</FormLabel>
+                      <FormLabel>Full Name</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="you@hospital.org" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" placeholder="••••••••" {...field} />
+                        <Input placeholder="Dr. Jane Smith" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -106,14 +89,14 @@ export default function LoginPage() {
                 />
                 <Button type="submit" disabled={isLoading} className="w-full" size="lg">
                   {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {isLoading ? 'Signing In...' : 'Sign In'}
+                  {isLoading ? 'Creating Account...' : 'Sign Up & Continue'}
                 </Button>
               </form>
             </Form>
           </CardContent>
         </Card>
-        <p className="px-8 text-center text-sm text-muted-foreground mt-6">
-            This is a simulated login. Any email/password will work.
+         <p className="px-8 text-center text-sm text-muted-foreground mt-6">
+            By signing up, you begin your personalized journey with MedLens.
         </p>
       </div>
     </div>

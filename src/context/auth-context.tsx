@@ -4,7 +4,6 @@
 import React, { createContext, useState, useEffect, type ReactNode } from 'react';
 
 interface User {
-  email: string;
   name: string;
 }
 
