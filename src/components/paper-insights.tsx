@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { ClinicalTrialPaper } from '@/lib/types';
@@ -151,7 +150,7 @@ export function PaperInsights({ paper, onWheel, onTouchMove }: PaperInsightsProp
                          <LabelList dataKey="count" position="top" offset={8} className="fill-foreground text-xs" />
                     </Bar>
                   </RechartsBarChart>
-                </Container>
+                </ChartContainer>
               </CardContent>
             </Card>
           </div>
