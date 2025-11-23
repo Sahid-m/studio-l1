@@ -68,21 +68,26 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
             <div 
               className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" 
               key={index}
+              aria-hidden={selectedIndex !== index}
             >
               {view.component}
             </div>
           ))}
         </div>
       </div>
-      <div className="absolute bottom-20 left-0 right-0 flex justify-center items-center gap-2 md:hidden">
+      <div className="absolute bottom-20 left-0 right-0 flex justify-center items-center gap-2 md:hidden" role="tablist" aria-label="Paper Views">
         {scrollSnaps.map((_, index) => (
           <button
             key={index}
+            role="tab"
+            aria-selected={selectedIndex === index}
+            aria-controls={`panel-${index}`}
             onClick={() => scrollTo(index)}
             className={cn(
               "p-1 rounded-full transition-all",
               selectedIndex === index ? "bg-primary/20" : "bg-transparent"
             )}
+            aria-label={`Go to ${views[index].label}`}
           >
             <div
               className={cn(
@@ -90,10 +95,11 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
                 selectedIndex === index ? "bg-primary" : "bg-muted-foreground/50"
               )}
             />
-             <span className="sr-only">Go to {views[index].label}</span>
           </button>
         ))}
       </div>
     </div>
   );
 }
+
+    

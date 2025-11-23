@@ -70,6 +70,7 @@ export function VideoCard({ video }: { video: VideoSummary }) {
           loop
           playsInline
           muted
+          title={video.title}
         />
         
         <div className={cn("absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity", isPlaying ? "opacity-0 group-hover:opacity-100" : "opacity-100")}>
@@ -95,10 +96,12 @@ export function VideoCard({ video }: { video: VideoSummary }) {
         </div>
 
         <div className="absolute bottom-20 left-0 right-0 px-6 pointer-events-none">
-            <Progress value={progress} className="h-1 bg-white/20 [&>div]:bg-white" />
+            <Progress value={progress} className="h-1 bg-white/20 [&>div]:bg-white" aria-label="Video progress" />
         </div>
         
       </div>
     </div>
   );
 }
+
+    

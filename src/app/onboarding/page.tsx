@@ -54,7 +54,7 @@ export default function OnboardingPage() {
       </header>
       
       <div className="p-4 flex-shrink-0">
-        <Progress value={progress} className="h-2" />
+        <Progress value={progress} className="h-2" aria-label={`Onboarding progress: ${progress}%`} />
       </div>
 
       <main className="flex-grow relative overflow-hidden">
@@ -70,22 +70,23 @@ export default function OnboardingPage() {
                         defaultValue={appContext.contentPreference}
                         onValueChange={(value) => value && appContext.setContentPreference(value as any)}
                         className="flex-col gap-4 w-full max-w-sm"
+                        aria-label="Content preference"
                     >
-                        <ToggleGroupItem value="article" className="h-20 w-full" variant="outline">
+                        <ToggleGroupItem value="article" className="h-20 w-full" variant="outline" aria-label="Select article preference">
                             <FileText className="mr-4 h-6 w-6" />
                             <div className='text-left'>
                                 <p className='font-bold'>Articles</p>
                                 <p className='text-xs text-muted-foreground'>In-depth written summaries.</p>
                             </div>
                         </ToggleGroupItem>
-                        <ToggleGroupItem value="video" className="h-20 w-full" variant="outline">
+                        <ToggleGroupItem value="video" className="h-20 w-full" variant="outline" aria-label="Select video preference">
                              <Video className="mr-4 h-6 w-6" />
                              <div className='text-left'>
                                 <p className='font-bold'>Videos</p>
                                 <p className='text-xs text-muted-foreground'>Quick animated explainers.</p>
                             </div>
                         </ToggleGroupItem>
-                        <ToggleGroupItem value="both" className="h-20 w-full" variant="outline">
+                        <ToggleGroupItem value="both" className="h-20 w-full" variant="outline" aria-label="Select both articles and videos preference">
                              <Blend className="mr-4 h-6 w-6" />
                              <div className='text-left'>
                                 <p className='font-bold'>Both</p>
@@ -111,7 +112,7 @@ export default function OnboardingPage() {
                         <p className="text-muted-foreground mb-8 max-w-sm mx-auto">Select the therapeutic areas that are most relevant to your practice.</p>
                     </div>
 
-                    <div className='flex-grow overflow-y-auto space-y-4 pr-2'>
+                    <div role="group" aria-label="Therapeutic Areas of Interest" className='flex-grow overflow-y-auto space-y-4 pr-2'>
                         {therapeuticAreas.map((area) => (
                              <Card 
                                 key={area}
@@ -123,8 +124,9 @@ export default function OnboardingPage() {
                                         checked={appContext.therapeuticInterests.includes(area)}
                                         onCheckedChange={() => appContext.toggleTherapeuticInterest(area)}
                                         className="mr-4 h-5 w-5"
+                                        aria-labelledby={`label-${area}`}
                                     />
-                                    <span className='font-medium'>{area}</span>
+                                    <span id={`label-${area}`} className='font-medium'>{area}</span>
                                 </Label>
                              </Card>
                         ))}
@@ -145,12 +147,12 @@ export default function OnboardingPage() {
                     <h2 className="text-2xl font-bold font-headline mt-8 mb-4">Notification Preferences</h2>
                     <p className="text-muted-foreground mb-8 max-w-sm">How would you like to be notified about new, relevant papers?</p>
                     
-                    <div className="space-y-4 w-full max-w-sm">
+                    <div role="group" aria-label="Notification Preferences" className="space-y-4 w-full max-w-sm">
                         <Card className='p-0'>
                             <Label className="flex items-center p-4 cursor-pointer">
-                                <Checkbox id="push" className="mr-4 h-5 w-5" />
+                                <Checkbox id="push" className="mr-4 h-5 w-5" aria-labelledby="label-push" />
                                 <Bell className="mr-4 h-6 w-6 text-primary" />
-                                <div className='text-left'>
+                                <div id="label-push" className='text-left'>
                                     <p className='font-bold'>Push Notifications</p>
                                     <p className='text-xs text-muted-foreground'>Receive alerts on your device.</p>
                                 </div>
@@ -158,9 +160,9 @@ export default function OnboardingPage() {
                         </Card>
                          <Card className='p-0'>
                             <Label className="flex items-center p-4 cursor-pointer">
-                                <Checkbox id="email" className="mr-4 h-5 w-5" />
+                                <Checkbox id="email" className="mr-4 h-5 w-5" aria-labelledby="label-email" />
                                 <Mail className="mr-4 h-6 w-6 text-primary" />
-                                <div className='text-left'>
+                                <div id="label-email" className='text-left'>
                                     <p className='font-bold'>Email Digests</p>
                                     <p className='text-xs text-muted-foreground'>Weekly summaries to your inbox.</p>
                                 </div>
@@ -197,3 +199,5 @@ export default function OnboardingPage() {
     </div>
   );
 }
+
+    

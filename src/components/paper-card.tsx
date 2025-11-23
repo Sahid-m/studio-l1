@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { ClinicalTrialPaper } from '@/lib/types';
@@ -81,13 +82,11 @@ export function PaperCard({ paper }: { paper: ClinicalTrialPaper }) {
             </p>
         </div>
         <div className="absolute top-4 right-4 flex gap-2">
-            <Button size="icon" variant="secondary" className="rounded-full h-10 w-10 bg-background/70 backdrop-blur-sm" onClick={handleSaveToggle}>
+            <Button size="icon" variant="secondary" className="rounded-full h-10 w-10 bg-background/70 backdrop-blur-sm" onClick={handleSaveToggle} aria-label={isSaved ? 'Unsave Paper' : 'Save Paper'}>
                 <Bookmark className={isSaved ? 'fill-primary text-primary transition-all' : 'transition-all'} />
-                <span className="sr-only">{isSaved ? 'Unsave Paper' : 'Save Paper'}</span>
             </Button>
-            <Button size="icon" variant="secondary" className="rounded-full h-10 w-10 bg-background/70 backdrop-blur-sm" onClick={handleShare}>
+            <Button size="icon" variant="secondary" className="rounded-full h-10 w-10 bg-background/70 backdrop-blur-sm" onClick={handleShare} aria-label="Share Paper">
                 <Share2 />
-                <span className="sr-only">Share Paper</span>
             </Button>
         </div>
     </CardHeader>
@@ -103,3 +102,5 @@ export function PaperCard({ paper }: { paper: ClinicalTrialPaper }) {
     </Card>
   );
 }
+
+    
