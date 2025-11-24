@@ -5,7 +5,7 @@ export const initialFeedItems: FeedItem[] = [
   {
     id: '1',
     type: 'paper',
-    sourceUrl: 'https://www.lilly.com/news/press-releases/lillys-tirzepatide-delivered-up-to-22-5-percent-weight-loss-in-adults-with-obesity-or-overweight-in-surmount-1',
+    sourceUrl: 'https://en.wikipedia.org/wiki/Tirzepatide',
     title: 'SURMOUNT-1: Tirzepatide Once Weekly for the Treatment of Obesity',
     principalInvestigator: 'Ania M. Jastreboff, MD, PhD',
     publishedDate: 'Jun 04, 2022',
@@ -20,7 +20,7 @@ export const initialFeedItems: FeedItem[] = [
     id: 'vid-1',
     type: 'video',
     paperId: '1',
-    sourceUrl: 'https://www.lilly.com/news/press-releases/lillys-tirzepatide-delivered-up-to-22-5-percent-weight-loss-in-adults-with-obesity-or-overweight-in-surmount-1',
+    sourceUrl: 'https://en.wikipedia.org/wiki/Tirzepatide',
     title: 'Video Summary: Mounjaro for Weight Loss (SURMOUNT-1)',
     videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     thumbnailUrl: 'https://picsum.photos/seed/videoplay/1024/768',
