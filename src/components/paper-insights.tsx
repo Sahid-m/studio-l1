@@ -131,7 +131,7 @@ export function PaperInsights({ paper, onWheel, onTouchMove }: PaperInsightsProp
                                     <YAxis type="number" hide />
                                     <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
                                     <Bar dataKey="value" fill="hsl(var(--chart-2))" radius={5}>
-                                        <LabelList dataKey="value" position="top" offset={8} className="fill-foreground font-medium" formatter={(value: number) => `${value}%`} />
+                                        <LabelList dataKey="value" position="top" offset={8} className="fill-foreground font-medium" formatter={(value: number) => `${'\'\'\''}%`} />
                                     </Bar>
                                 </RechartsBarChart>
                             </ChartContainer>
@@ -169,12 +169,13 @@ export function PaperInsights({ paper, onWheel, onTouchMove }: PaperInsightsProp
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                           <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-muted">
+                           <div className="relative w-full rounded-lg overflow-hidden bg-muted">
                                 <Image 
                                     src="https://storage.googleapis.com/studiopaper-assets/world-map-markets.png"
                                     alt="World map showing available markets in the US, UK, and several other territories."
-                                    fill
-                                    className="object-contain"
+                                    width={1024}
+                                    height={576}
+                                    className="object-contain w-full h-auto"
                                     data-ai-hint="world map"
                                 />
                            </div>
