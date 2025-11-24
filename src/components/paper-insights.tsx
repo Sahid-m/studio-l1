@@ -173,8 +173,8 @@ export function PaperInsights({ paper, onWheel, onTouchMove }: PaperInsightsProp
                                 <Image 
                                     src="https://storage.googleapis.com/studiopaper-assets/world-map-markets.png"
                                     alt="World map showing available markets in the US, UK, and several other territories."
-                                    layout="fill"
-                                    objectFit="contain"
+                                    fill
+                                    className="object-contain"
                                     data-ai-hint="world map"
                                 />
                            </div>
@@ -211,7 +211,3 @@ export function PaperInsights({ paper, onWheel, onTouchMove }: PaperInsightsProp
     </div>
   );
 }
-
-    
-
-    
