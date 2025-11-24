@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import { AppStateContext } from '@/context/app-state-context';
 import { AuthContext } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,7 +14,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 
-import { FileText, Video, Blend, Bell, Mail, LogOut, Settings as SettingsIcon } from 'lucide-react';
+import { FileText, Video, Blend, Bell, Mail, LogOut, Settings as SettingsIcon, ListTodo } from 'lucide-react';
 import { therapeuticAreas } from '@/lib/constants';
 
 export default function SettingsPage() {
@@ -135,6 +136,21 @@ export default function SettingsPage() {
         </Card>
 
         <Separator />
+        
+        <Card>
+            <CardHeader>
+                <CardTitle>Admin</CardTitle>
+                <CardDescription>Manage application content and settings.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                 <Link href="/dashboard" passHref>
+                    <Button variant="outline" className="w-full sm:w-auto">
+                        <ListTodo className="mr-2 h-4 w-4" />
+                        Go to Dashboard
+                    </Button>
+                </Link>
+            </CardContent>
+        </Card>
 
         <Card>
             <CardHeader>
@@ -163,5 +179,3 @@ export default function SettingsPage() {
     </div>
   );
 }
-
-    
