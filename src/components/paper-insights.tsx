@@ -171,15 +171,12 @@ export function PaperInsights({ paper, onWheel, onTouchMove }: PaperInsightsProp
                         <CardContent>
                            <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-muted">
                                 <Image 
-                                    src="https://picsum.photos/seed/worldmap/1280/720"
-                                    alt="World map of available markets"
+                                    src="https://storage.googleapis.com/studiopaper-assets/world-map-markets.png"
+                                    alt="World map showing available markets in the US, UK, and several other territories."
                                     layout="fill"
-                                    objectFit="cover"
+                                    objectFit="contain"
                                     data-ai-hint="world map"
                                 />
-                                <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                                    <p className="text-white font-bold text-lg bg-black/50 px-4 py-2 rounded-md">Placeholder Map</p>
-                                </div>
                            </div>
                         </CardContent>
                     </Card>
@@ -214,5 +211,7 @@ export function PaperInsights({ paper, onWheel, onTouchMove }: PaperInsightsProp
     </div>
   );
 }
+
+    
 
     
