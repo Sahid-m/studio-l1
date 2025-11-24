@@ -131,7 +131,7 @@ export function PaperInsights({ paper, onWheel, onTouchMove }: PaperInsightsProp
                                     <YAxis type="number" hide />
                                     <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
                                     <Bar dataKey="value" fill="hsl(var(--chart-2))" radius={5}>
-                                        <LabelList dataKey="value" position="top" offset={8} className="fill-foreground font-medium" formatter={(value: number) => `${'\'\'\''}%`} />
+                                        <LabelList dataKey="value" position="top" offset={8} className="fill-foreground font-medium" formatter={(value: number) => `${value}%`} />
                                     </Bar>
                                 </RechartsBarChart>
                             </ChartContainer>
@@ -169,14 +169,13 @@ export function PaperInsights({ paper, onWheel, onTouchMove }: PaperInsightsProp
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                           <div className="relative w-full rounded-lg overflow-hidden bg-muted">
+                           <div className="relative w-full rounded-lg overflow-hidden bg-muted aspect-video">
                                 <Image 
-                                    src="https://storage.googleapis.com/studiopaper-assets/world-map-markets.png"
-                                    alt="World map showing available markets in the US, UK, and several other territories."
-                                    width={1024}
-                                    height={576}
-                                    className="object-contain w-full h-auto"
-                                    data-ai-hint="world map"
+                                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/US_-_UK_Locator_Map.png/1200px-US_-_UK_Locator_Map.png?20201225021235"
+                                    alt="Map showing available markets for the drug, including the US and UK."
+                                    fill
+                                    className="object-contain"
+                                    data-ai-hint="US UK map"
                                 />
                            </div>
                         </CardContent>
