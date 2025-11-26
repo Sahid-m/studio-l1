@@ -1,13 +1,13 @@
 
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
-import useEmblaCarousel from 'embla-carousel-react';
 import type { ClinicalTrialPaper } from '@/lib/types';
+import { cn } from '@/lib/utils';
+import useEmblaCarousel from 'embla-carousel-react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { PaperCard } from './paper-card';
 import { PaperInsights } from './paper-insights';
 import { PaperSource } from './paper-source';
-import { cn } from '@/lib/utils';
 
 export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPaper, onVerticalSwipe: (enabled: boolean) => void }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -22,21 +22,29 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
     if (!emblaApi) return;
     const newIndex = emblaApi.selectedScrollSnap();
     setSelectedIndex(newIndex);
+    // This is the key change. We tell the parent component whether vertical swiping is allowed.
+    // It's only allowed on the main card (index 1).
     onVerticalSwipe(newIndex === 1);
   }, [emblaApi, onVerticalSwipe]);
 
   useEffect(() => {
     if (!emblaApi) return;
-    
+
     setScrollSnaps(emblaApi.scrollSnapList());
     onSelect();
 
     emblaApi.on('select', onSelect);
     emblaApi.on('reInit', onSelect);
 
+    // When the user settles on a new slide, re-evaluate if the parent should be swipeable.
+    const handleSettle = () => onSelect();
+    emblaApi.on('settle', handleSettle);
+
+
     return () => {
       emblaApi.off('select', onSelect);
       emblaApi.off('reInit', onSelect);
+      emblaApi.off('settle', handleSettle);
     };
   }, [emblaApi, onSelect]);
 
@@ -45,15 +53,16 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
   };
 
   const handleWheel = (e: React.WheelEvent) => {
-    // If the user is scrolling vertically inside the component,
-    // stop the event from propagating to the parent vertical carousel.
+    // If the user is scrolling vertically inside a component with its own scrollbar,
+    // we need to stop that event from bubbling up to the parent vertical carousel.
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
       e.stopPropagation();
     }
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    // Similar to handleWheel, but for touch devices.
+    // Similar to handleWheel, but for touch devices. Stop propagation to prevent
+    // the parent vertical carousel from firing.
     e.stopPropagation();
   }
 
@@ -68,8 +77,8 @@ export function PaperView({ paper, onVerticalSwipe }: { paper: ClinicalTrialPape
       <div className="overflow-hidden h-full" ref={emblaRef}>
         <div className="flex h-full">
           {views.map((view, index) => (
-            <div 
-              className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full" 
+            <div
+              className="relative min-w-0 flex-shrink-0 flex-grow-0 basis-full h-full"
               key={index}
               aria-hidden={selectedIndex !== index}
             >
